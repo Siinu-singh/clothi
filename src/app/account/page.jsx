@@ -67,12 +67,13 @@ export default function AccountPage() {
     try {
       setLoading(true);
       const response = await apiFetch('/auth/profile');
-      const data = response.data || response;
+      // Response structure: { success: true, data: { firstName, lastName, ... }, ... }
+      const profileData = response.data || response;
       setProfile({
-        firstName: data.firstName || '',
-        lastName: data.lastName || '',
-        email: data.email || '',
-        phone: data.phone || '',
+        firstName: profileData.firstName || '',
+        lastName: profileData.lastName || '',
+        email: profileData.email || '',
+        phone: profileData.phone || '',
       });
     } catch (err) {
       console.error('Failed to load profile:', err);

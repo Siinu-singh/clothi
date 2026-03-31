@@ -45,6 +45,7 @@
   gap: 0.75rem;
   font-size: 0.85rem;
   color: #666;
+  flex-wrap: wrap;
 }
 
 .date {
@@ -60,8 +61,10 @@
   font-weight: 500;
 }
 
-.status {
-  text-align: right;
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .statusBadge {
@@ -73,6 +76,23 @@
   font-size: 0.75rem;
   font-weight: 500;
   text-transform: capitalize;
+}
+
+.editBtn {
+  background: transparent;
+  border: 1px solid #ddd;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.editBtn:hover {
+  background: #f5f5f5;
+  border-color: #bbb;
+  color: #222;
 }
 
 .title {
@@ -131,6 +151,139 @@
 }
 
 .helpBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Edit Form Styles */
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.editTitle {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #222;
+  font-weight: 600;
+}
+
+.editField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.editField label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #444;
+}
+
+.ratingSelect {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.starBtn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #ddd;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.starBtn:hover {
+  color: #ffc107;
+}
+
+.starBtn.starActive {
+  color: #ffc107;
+}
+
+.editInput {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.editInput:focus {
+  outline: none;
+  border-color: #222;
+}
+
+.editTextarea {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.editTextarea:focus {
+  outline: none;
+  border-color: #222;
+}
+
+.charCount {
+  font-size: 0.75rem;
+  color: #999;
+  text-align: right;
+}
+
+.editActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid #ddd;
+  padding: 0.6rem 1.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.cancelBtn:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #bbb;
+}
+
+.cancelBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.saveBtn {
+  background: #222;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: white;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background: #333;
+}
+
+.saveBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

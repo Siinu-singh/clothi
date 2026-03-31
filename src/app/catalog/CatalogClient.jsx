@@ -16,6 +16,7 @@ export default function CatalogClient() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [sortBy, setSortBy] = useState('newest');
+  const [hoverImage, setHoverImage] = useState({});
   
   const { user } = useAuth();
   const { addToFavorites, removeFromFavorites, isFavorited } = useFavorites();
@@ -174,9 +175,13 @@ export default function CatalogClient() {
                 {products.map(p => (
                   <Link href={`/product/${p._id}`} key={p._id} className={styles.productCard}>
                     <article>
-                      <div className={styles.productImage}>
+                      <div 
+                        className={styles.productImage}
+                        onMouseEnter={() => setHoverImage({...hoverImage, [p._id]: true})}
+                        onMouseLeave={() => setHoverImage({...hoverImage, [p._id]: false})}
+                      >
                         <img 
-                          src={p.image} 
+                          src={hoverImage[p._id] && p.images?.[0] ? p.images[0] : p.image} 
                           alt={`${p.title} - ${p.category} - $${p.price}`}
                           loading="lazy"
                           width={400}

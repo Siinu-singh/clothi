@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import styles from './ProductDetail.module.css';
 import { apiFetch } from '../../../lib/api';
 import { useCart } from '../../../context/CartContext';
@@ -26,9 +27,18 @@ export default function ProductDetailClient({ params, initialProduct }) {
   const [size, setSize] = useState('');
   const [color, setColor] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [isFav, setIsFav] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [reviewsRefresh, setReviewsRefresh] = useState(0);
+   const [isFav, setIsFav] = useState(false);
+   const [loading, setLoading] = useState(false);
+   const [reviewsRefresh, setReviewsRefresh] = useState(0);
+   const [selectedImage, setSelectedImage] = useState(null);
+   const [hoverImage, setHoverImage] = useState({});
+   
+   // Similar products state
+   const [similarProducts, setSimilarProducts] = useState([]);
+   const [similarLoading, setSimilarLoading] = useState(false);
+   const [similarPage, setSimilarPage] = useState(1);
+   const [hasMoreSimilar, setHasMoreSimilar] = useState(true);
+   const SIMILAR_LIMIT = 4;
 
   useEffect(() => {
     if (!initialProduct) {
@@ -41,6 +51,8 @@ export default function ProductDetailClient({ params, initialProduct }) {
       if (initialProduct.colors?.length > 0) {
         setColor(initialProduct.colors[0]);
       }
+      // Set initial selected image
+      setSelectedImage(initialProduct.image);
     }
   }, [params.id, initialProduct]);
 
@@ -50,6 +62,50 @@ export default function ProductDetailClient({ params, initialProduct }) {
       setIsFav(isFavorited(params.id));
     }
   }, [params.id, product]);
+
+  // Fetch similar products when product loads
+  useEffect(() => {
+    if (params.id) {
+      // Reset similar products when product changes
+      setSimilarProducts([]);
+      setSimilarPage(1);
+      setHasMoreSimilar(true);
+      fetchSimilarProducts(1, true);
+    }
+  }, [params.id]);
+
+  const fetchSimilarProducts = async (page = 1, reset = false) => {
+    if (similarLoading || (!hasMoreSimilar && !reset)) return;
+    
+    try {
+      setSimilarLoading(true);
+      // Use the dedicated related products endpoint
+      const limit = SIMILAR_LIMIT * page;
+      const response = await apiFetch(
+        `/products/${params.id}/related?limit=${limit}`
+      );
+      
+      const products = response.data || [];
+      
+      if (reset) {
+        setSimilarProducts(products.slice(0, SIMILAR_LIMIT));
+      } else {
+        setSimilarProducts(products);
+      }
+      
+      // Check if there are more products to load (max 10 from API)
+      setHasMoreSimilar(products.length >= limit && limit < 10);
+      setSimilarPage(page);
+    } catch (err) {
+      console.error('Failed to fetch similar products:', err);
+    } finally {
+      setSimilarLoading(false);
+    }
+  };
+
+  const handleLoadMoreSimilar = () => {
+    fetchSimilarProducts(similarPage + 1);
+  };
 
   const fetchProduct = async () => {
     try {
@@ -66,6 +122,8 @@ export default function ProductDetailClient({ params, initialProduct }) {
       if (productData.colors?.length > 0) {
         setColor(productData.colors[0]);
       }
+      // Set initial selected image
+      setSelectedImage(productData.image);
     } catch (err) {
       console.error('Failed to fetch product:', err);
       setError('Product not found');
@@ -198,12 +256,42 @@ export default function ProductDetailClient({ params, initialProduct }) {
           <div className={styles.imageCol}>
             <div className={styles.mainImage}>
               <img 
-                src={product.image} 
+                src={selectedImage || product.image} 
                 alt={`${product.title} - ${product.category} - CLOTHI sustainable fashion`}
                 width={800}
                 height={1000}
               />
             </div>
+            {/* Image Gallery Thumbnails */}
+            {product.images && product.images.length > 0 && (
+              <div className={styles.imageGallery}>
+                {/* Main image as first thumbnail */}
+                <button
+                  className={`${styles.thumbnail} ${(selectedImage || product.image) === product.image ? styles.thumbnailActive : ''}`}
+                  onClick={() => setSelectedImage(product.image)}
+                  aria-label="View main product image"
+                >
+                  <img 
+                    src={product.image} 
+                    alt={`${product.title} - Main view`}
+                  />
+                </button>
+                {/* Additional images */}
+                {product.images.map((img, index) => (
+                  <button
+                    key={index}
+                    className={`${styles.thumbnail} ${selectedImage === img ? styles.thumbnailActive : ''}`}
+                    onClick={() => setSelectedImage(img)}
+                    aria-label={`View product image ${index + 2}`}
+                  >
+                    <img 
+                      src={img} 
+                      alt={`${product.title} - View ${index + 2}`}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div className={styles.infoCol}>
             <span className={styles.kicker}>{product.category}</span>
@@ -318,6 +406,62 @@ export default function ProductDetailClient({ params, initialProduct }) {
              onReviewSubmitted={() => setReviewsRefresh(r => r + 1)}
            />
          </div>
+
+         {/* You May Like Section */}
+         {similarProducts.length > 0 && (
+           <div className={styles.similarSection}>
+             <div className={styles.similarHeader}>
+               <span className={styles.similarKicker}>Curated For You</span>
+               <h2 className={styles.similarTitle}>You May Also Like</h2>
+             </div>
+             
+              <div className={styles.similarGrid}>
+                {similarProducts.map((p) => (
+                  <Link href={`/product/${p._id}`} key={p._id} className={styles.similarCard}>
+                    <article>
+                      <div 
+                        className={styles.similarImage}
+                        onMouseEnter={() => setHoverImage({...hoverImage, [p._id]: true})}
+                        onMouseLeave={() => setHoverImage({...hoverImage, [p._id]: false})}
+                      >
+                        <img 
+                          src={hoverImage[p._id] && p.images?.[0] ? p.images[0] : p.image} 
+                          alt={`${p.title} - ${p.category}`}
+                          loading="lazy"
+                          width={300}
+                          height={375}
+                        />
+                        {p.badge && <span className={styles.similarBadge}>{p.badge}</span>}
+                      </div>
+                      <div className={styles.similarInfo}>
+                        <h3 className={styles.similarName}>{p.title}</h3>
+                        <p className={styles.similarPrice}>{formatPrice(p.price)}</p>
+                      </div>
+                    </article>
+                  </Link>
+                ))}
+              </div>
+
+             {/* Load More Button */}
+             {hasMoreSimilar && (
+               <div className={styles.loadMoreWrapper}>
+                 <button 
+                   className={styles.loadMoreBtn}
+                   onClick={handleLoadMoreSimilar}
+                   disabled={similarLoading}
+                 >
+                   {similarLoading ? 'Loading...' : 'LOAD MORE'}
+                 </button>
+               </div>
+             )}
+             
+             {similarLoading && similarProducts.length > 0 && (
+               <div className={styles.similarLoading}>
+                 <div className={styles.spinner}></div>
+               </div>
+             )}
+           </div>
+         )}
        </div>
      </div>
    );
