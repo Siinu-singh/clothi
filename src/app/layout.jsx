@@ -1,8 +1,8 @@
 import './globals.css';
-import Navbar from '../components/Navbar';
-import AnnouncementBar from '../components/AnnouncementBar';
-import Footer from '../components/Footer';
-import Providers from '../components/Providers';
+import Navbar from '../components/Navbar/Navbar';
+import AnnouncementBar from '../components/AnnouncementBar/AnnouncementBar';
+import Footer from '../components/Footer/Footer';
+import Providers from '../components/Providers/Providers';
 import { Analytics } from "@vercel/analytics/react";
 import { JsonLd } from '../components/seo/JsonLd';
 
@@ -20,7 +20,7 @@ export const viewport = {
 
 // Root metadata with SEO optimization
 export const metadata = {
-  metadataBase: new URL('https://clothi.com'),
+  metadataBase: new URL('https://clothi.co.in'),
   title: {
     default: 'CLOTHI — Premium Coastal Lifestyle Apparel',
     template: '%s | CLOTHI',
@@ -49,7 +49,7 @@ export const metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://clothi.com',
+    url: 'https://clothi.co.in',
     siteName: 'CLOTHI',
     title: 'CLOTHI — Premium Coastal Lifestyle Apparel',
     description: 'Discover sustainable, premium coastal lifestyle apparel. Sun-drenched softness crafted from organic pima cotton.',
@@ -81,12 +81,16 @@ export const metadata = {
     },
   },
   alternates: {
-    canonical: 'https://clothi.com/',
+    canonical: 'https://clothi.co.in/',
   },
   verification: {
     google: 'google-site-verification-code',
   },
   category: 'ecommerce',
+  icons: {
+    icon: '/clothi.png',
+    apple: '/clothi.png',
+  },
 };
 
 // Organization Schema
@@ -94,10 +98,10 @@ const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'CLOTHI',
-  url: 'https://clothi.com',
+  url: 'https://clothi.co.in',
   logo: {
     '@type': 'ImageObject',
-    url: 'https://clothi.com/logo.png',
+    url: 'https://clothi.co.in/logo.png',
     width: 512,
     height: 512,
   },
@@ -110,7 +114,7 @@ const organizationSchema = {
   ],
   contactPoint: {
     '@type': 'ContactPoint',
-    email: 'support@clothi.com',
+    email: 'support@clothi.co.in',
     contactType: 'customer service',
     availableLanguage: 'English',
   },
@@ -126,7 +130,7 @@ const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'CLOTHI',
-  url: 'https://clothi.com',
+  url: 'https://clothi.co.in',
   description: 'Premium sustainable coastal lifestyle apparel',
   inLanguage: 'en',
   publisher: {
@@ -137,7 +141,7 @@ const websiteSchema = {
     '@type': 'SearchAction',
     target: {
       '@type': 'EntryPoint',
-      urlTemplate: 'https://clothi.com/catalog?search={search_term_string}',
+      urlTemplate: 'https://clothi.co.in/catalog?search={search_term_string}',
     },
     'query-input': 'required name=search_term_string',
   },

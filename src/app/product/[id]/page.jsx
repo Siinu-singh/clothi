@@ -2,7 +2,7 @@ import ProductDetailClient from './ProductDetailClient';
 import { JsonLd, generateProductSchema, generateBreadcrumbSchema } from '../../../components/seo/JsonLd';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-const SITE_URL = 'https://clothi.com';
+const SITE_URL = 'https://clothi.co.in';
 
 // Fetch product data for metadata
 async function getProduct(id) {

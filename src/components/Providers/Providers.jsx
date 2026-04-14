@@ -1,10 +1,10 @@
 'use client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { AuthProvider } from '../context/AuthContext';
-import { CartProvider } from '../context/CartContext';
-import { FavoritesProvider } from '../context/FavoritesContext';
-import { ToastProvider } from '../context/ToastContext';
-import { LoginPromptProvider } from '../context/LoginPromptContext';
+import { AuthProvider } from '../../context/AuthContext';
+import { CartProvider } from '../../context/CartContext';
+import { FavoritesProvider } from '../../context/FavoritesContext';
+import { ToastProvider } from '../../context/ToastContext';
+import { LoginPromptProvider } from '../../context/LoginPromptContext';
 
 const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 

@@ -3,7 +3,7 @@
  * Controls search engine crawling behavior
  */
 
-const BASE_URL = 'https://clothi.com';
+const BASE_URL = 'https://clothi.co.in';
 
 export default function robots() {
   return {

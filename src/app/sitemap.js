@@ -3,7 +3,7 @@
  * Generates sitemap.xml with all pages and products
  */
 
-const BASE_URL = 'https://clothi.com';
+const BASE_URL = 'https://clothi.co.in';
 
 // Static pages with their priorities and change frequencies
 const staticPages = [

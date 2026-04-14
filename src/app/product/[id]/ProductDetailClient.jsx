@@ -9,9 +9,9 @@ import { useFavorites } from '../../../context/FavoritesContext';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
 import { useLoginPrompt } from '../../../context/LoginPromptContext';
-import ReviewForm from '../../../components/ReviewForm';
-import ReviewsList from '../../../components/ReviewsList';
-import ProductRating from '../../../components/ProductRating';
+import ReviewForm from '../../../components/ReviewForm/ReviewForm';
+import ReviewsList from '../../../components/ReviewsList/ReviewsList';
+import ProductRating from '../../../components/ProductRating/ProductRating';
 
 export default function ProductDetailClient({ params, initialProduct }) {
   const router = useRouter();

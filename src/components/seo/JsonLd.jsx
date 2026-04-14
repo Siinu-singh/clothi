@@ -17,7 +17,7 @@ export function JsonLd({ data }) {
 /**
  * Product Schema Generator
  */
-export function generateProductSchema(product, baseUrl = 'https://clothi.com') {
+export function generateProductSchema(product, baseUrl = 'https://clothi.co.in') {
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -60,7 +60,7 @@ export function generateProductSchema(product, baseUrl = 'https://clothi.com') {
 /**
  * Breadcrumb Schema Generator
  */
-export function generateBreadcrumbSchema(items, baseUrl = 'https://clothi.com') {
+export function generateBreadcrumbSchema(items, baseUrl = 'https://clothi.co.in') {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -94,7 +94,7 @@ export function generateFAQSchema(faqs) {
 /**
  * Article Schema Generator (for blog posts)
  */
-export function generateArticleSchema(article, baseUrl = 'https://clothi.com') {
+export function generateArticleSchema(article, baseUrl = 'https://clothi.co.in') {
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',

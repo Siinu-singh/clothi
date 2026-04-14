@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import styles from './WishlistShareModal.module.css';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../../context/ToastContext';
 
 /**
  * WishlistShareModal Component

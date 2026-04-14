@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './SharedWishlistPage.module.css';
-import ProductRating from './ProductRating';
-import { useCart } from '../context/CartContext';
-import { useToast } from '../context/ToastContext';
+import ProductRating from '../ProductRating/ProductRating';
+import { useCart } from '../../context/CartContext';
+import { useToast } from '../../context/ToastContext';
 
 /**
  * SharedWishlistPage Component

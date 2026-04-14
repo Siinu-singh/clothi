@@ -24,12 +24,29 @@
 }
 
 .brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   font-family: var(--font-body);
   font-size: 1.125rem;
   font-weight: 800;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--color-on-surface);
+  transition: opacity 0.15s ease;
+  text-decoration: none;
+}
+
+.brand:hover {
+  opacity: 0.8;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  display: flex;
+  align-items: center;
 }
 
 .right {

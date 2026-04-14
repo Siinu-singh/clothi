@@ -3,10 +3,10 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Search, Heart, User, ShoppingBag, LogOut, Package, Settings } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';
-import { useFavorites } from '../context/FavoritesContext';
-import CartDropdown from './CartDropdown';
+import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
+import { useFavorites } from '../../context/FavoritesContext';
+import CartDropdown from '../CartDropdown/CartDropdown';
 import styles from './Navbar.module.css';
 
 const Navbar = () => {
@@ -60,10 +60,13 @@ const Navbar = () => {
       className={styles.navbar}
       onMouseLeave={() => setActiveMenu(null)}
     >
-      <div className={styles.inner}>
-        <div className={styles.center}>
-          <Link href="/" className={styles.brand}>CLOTHI</Link>
-        </div>
+       <div className={styles.inner}>
+         <div className={styles.center}>
+           <Link href="/" className={styles.brand}>
+             <img src="/clothi.png" alt="Clothi Logo" className={styles.logo} />
+             <span>CLOTHI</span>
+           </Link>
+         </div>
         <div className={styles.right}>
           <div className={styles.searchBox}>
             <Search size={16} strokeWidth={1.5} color="var(--color-outline)" />

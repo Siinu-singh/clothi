@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './NotificationPreferencesPanel.module.css';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../../context/ToastContext';
 
 /**
  * NotificationPreferencesPanel Component

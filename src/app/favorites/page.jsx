@@ -7,7 +7,7 @@ import { useFavorites } from '../../context/FavoritesContext';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import WishlistShareModal from '../../components/WishlistShareModal';
+import WishlistShareModal from '../../components/WishlistShareModal/WishlistShareModal';
 import styles from './Favorites.module.css';
 
 export default function FavoritesPage() {

@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import styles from './ReviewItem.module.css';
-import StarRating from './StarRating';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
-import { apiFetch } from '../lib/api';
+import StarRating from '../StarRating/StarRating';
+import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
+import { apiFetch } from '../../lib/api';
 
 /**
  * ReviewItem Component

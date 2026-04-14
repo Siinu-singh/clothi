@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styles from './ProductRating.module.css';
-import StarRating from './StarRating';
+import StarRating from '../StarRating/StarRating';
 
 /**
  * ProductRating Component

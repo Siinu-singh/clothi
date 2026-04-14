@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './ReviewsList.module.css';
-import ReviewItem from './ReviewItem';
-import { useToast } from '../context/ToastContext';
-import { apiFetch } from '../lib/api';
+import ReviewItem from '../ReviewItem/ReviewItem';
+import { useToast } from '../../context/ToastContext';
+import { apiFetch } from '../../lib/api';
 
 /**
  * ReviewsList Component

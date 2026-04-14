@@ -2,9 +2,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Trash2, ShoppingBag } from 'lucide-react';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
+import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import styles from './CartDropdown.module.css';
 
 export default function CartDropdown({ isOpen, onClose }) {
