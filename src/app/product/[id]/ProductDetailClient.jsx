@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './ProductDetail.module.css';
 import { apiFetch } from '../../../lib/api';
 import { useCart } from '../../../context/CartContext';
@@ -183,51 +184,69 @@ export default function ProductDetailClient({ params, initialProduct }) {
     }
   };
 
-  const formatPrice = (price) => {
-    return `$${price.toFixed(2)}`;
-  };
+   const formatPrice = (price) => {
+     return `$${price.toFixed(2)}`;
+   };
 
-  // Color name to hex mapping (can be expanded)
-  const colorToHex = {
-    'White': '#ffffff',
-    'Black': '#1b1c1a',
-    'Navy': '#1a2a4a',
-    'Indigo': '#3f4eae',
-    'Cream': '#f5f3ef',
-    'Tan': '#d2b48c',
-    'Brown': '#8b4513',
-    'Black/Brown': '#3d2b1f',
-    'Silver': '#c0c0c0',
-    'Tortoise': '#8b5a2b',
-    'Charcoal': '#36454f',
-    'Oatmeal': '#f3e5d0',
-    'Bone': '#e3dac9',
-    'Natural': '#f5f5dc',
-    'Cognac': '#9a3001',
-    'Rust': '#b7410e',
-    'Sage': '#9dc183',
-    'Terracotta': '#e2725b',
-    'Olive': '#556b2f',
-    'Sand': '#c2b280',
-    'Stone': '#918e85',
-    'Dune White': '#f5f3ef',
-    'Clay': '#ba5b3f',
-    'Forest': '#3b4a3f',
-  };
+   // Color name to hex mapping (can be expanded)
+   const colorToHex = {
+     'White': '#ffffff',
+     'Black': '#1b1c1a',
+     'Navy': '#1a2a4a',
+     'Indigo': '#3f4eae',
+     'Cream': '#f5f3ef',
+     'Tan': '#d2b48c',
+     'Brown': '#8b4513',
+     'Black/Brown': '#3d2b1f',
+     'Silver': '#c0c0c0',
+     'Tortoise': '#8b5a2b',
+     'Charcoal': '#36454f',
+     'Oatmeal': '#f3e5d0',
+     'Bone': '#e3dac9',
+     'Natural': '#f5f5dc',
+     'Cognac': '#9a3001',
+     'Rust': '#b7410e',
+     'Sage': '#9dc183',
+     'Terracotta': '#e2725b',
+     'Olive': '#556b2f',
+     'Sand': '#c2b280',
+     'Stone': '#918e85',
+     'Dune White': '#f5f3ef',
+     'Clay': '#ba5b3f',
+     'Forest': '#3b4a3f',
+   };
 
-  // Loading state
-  if (pageLoading) {
-    return (
-      <div className={styles.page}>
-        <div className={styles.inner}>
-          <div className={styles.loadingContainer}>
-            <div className={styles.spinner}></div>
-            <p>Loading product...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+   // Image carousel variables
+   const allImages = product ? [product.image, ...(product.images || [])] : [];
+   const currentIndex = selectedImage ? allImages.indexOf(selectedImage) : 0;
+
+   const handlePrevImage = (e) => {
+     e.stopPropagation();
+     if (allImages.length <= 1) return;
+     const newIndex = currentIndex <= 0 ? allImages.length - 1 : currentIndex - 1;
+     setSelectedImage(allImages[newIndex]);
+   };
+
+   const handleNextImage = (e) => {
+     e.stopPropagation();
+     if (allImages.length <= 1) return;
+     const newIndex = currentIndex >= allImages.length - 1 ? 0 : currentIndex + 1;
+     setSelectedImage(allImages[newIndex]);
+   };
+
+   // Loading state
+   if (pageLoading) {
+     return (
+       <div className={styles.page}>
+         <div className={styles.inner}>
+           <div className={styles.loadingContainer}>
+             <div className={styles.spinner}></div>
+             <p>Loading product...</p>
+           </div>
+         </div>
+       </div>
+     );
+   }
 
   // Error state
   if (error || !product) {
@@ -255,12 +274,22 @@ export default function ProductDetailClient({ params, initialProduct }) {
         <div className={styles.grid}>
           <div className={styles.imageCol}>
             <div className={styles.mainImage}>
+              {allImages.length > 1 && (
+                <button className={`${styles.imageNavBtn} ${styles.prevBtn}`} onClick={handlePrevImage} aria-label="Previous image">
+                  <ChevronLeft size={24} />
+                </button>
+              )}
               <img 
                 src={selectedImage || product.image} 
                 alt={`${product.title} - ${product.category} - CLOTHI sustainable fashion`}
                 width={800}
                 height={1000}
               />
+              {allImages.length > 1 && (
+                <button className={`${styles.imageNavBtn} ${styles.nextBtn}`} onClick={handleNextImage} aria-label="Next image">
+                  <ChevronRight size={24} />
+                </button>
+              )}
             </div>
             {/* Image Gallery Thumbnails */}
             {product.images && product.images.length > 0 && (

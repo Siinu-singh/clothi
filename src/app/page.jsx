@@ -7,24 +7,30 @@ import { apiFetch } from '../lib/api';
 import styles from './Home.module.css';
 import ImageSlider from '../components/ImageSlider/ImageSlider';
 import { useCart } from '../context/CartContext';
+import { useFavorites } from '../context/FavoritesContext';
+import { useToast } from '../context/ToastContext';
 
 import WatchAndShop from '../components/WatchAndShop/WatchAndShop';
 import SoulOfClothi from '../components/SoulOfClothi/SoulOfClothi';
 import StoriesInMotion from '../components/StoriesInMotion/StoriesInMotion';
 import ClotheiBrand from '../components/ClotheiBrand/ClotheiBrand';
-
+import MatchTheMood from '../components/MatchTheMood/MatchTheMood';
+import ShopByOccasion from '../components/ShopByOccasion/ShopByOccasion';
 export default function Home() {
   const [newArrivals, setNewArrivals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
   const carouselRef = useRef(null);
   const { addToCart } = useCart();
+  const { addToFavorites, removeFromFavorites, isFavorited } = useFavorites();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchNewArrivals = async () => {
       try {
         setLoading(true);
-        const response = await apiFetch('/products?limit=14&sortBy=newest');
+        const sortBy = activeTab === 'trending' ? 'popular' : 'newest';
+        const response = await apiFetch(`/products?limit=14&sortBy=${sortBy}`);
         setNewArrivals(response.data?.products || response.products || []);
       } catch (error) {
         console.error('Failed to fetch new arrivals:', error);
@@ -34,7 +40,7 @@ export default function Home() {
     };
 
     fetchNewArrivals();
-  }, []);
+  }, [activeTab]);
 
   // Handle tab filter clicks
   const handleTabClick = (tab) => {
@@ -64,7 +70,7 @@ export default function Home() {
   // Format price for display
   const formatPrice = (price) => {
     if (typeof price === 'number') {
-      return `$${price.toFixed(0)}`;
+      return `₹${price.toFixed(0)}`;
     }
     return price;
   };
@@ -76,11 +82,32 @@ export default function Home() {
     await addToCart(productId, 1);
   };
 
+  // Handle add/remove from favorites
+  const handleFavoriteClick = async (e, productId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      if (isFavorited(productId)) {
+        const removed = await removeFromFavorites(productId);
+        if (removed !== false) {
+          toast.success('Removed from favorites');
+        }
+      } else {
+        const added = await addToFavorites(productId);
+        if (added !== false) {
+          toast.success('Added to favorites');
+        }
+      }
+    } catch (error) {
+      toast.error('Failed to update favorites');
+    }
+  };
+
   const sliderImages = [
-    'https://res.cloudinary.com/dsrht8rss/image/upload/v1775568636/4_koks8s.jpg',
+    'https://res.cloudinary.com/dsrht8rss/image/upload/v1776509044/WEBSITE_BANNERS_gvcuq6.png',
     'https://res.cloudinary.com/dsrht8rss/image/upload/v1776182265/5_qexced.png',
-    'https://res.cloudinary.com/dsrht8rss/image/upload/v1775568636/1_gnlpyw.jpg',
-    'https://res.cloudinary.com/dsrht8rss/image/upload/v1776182265/5_qexced.png',
+    'https://res.cloudinary.com/dsrht8rss/image/upload/v1776508755/DRYFIT_image_iy9bke.png',
+    'https://res.cloudinary.com/dsrht8rss/image/upload/v1776508907/Zen-G_by_clothi_1_tkltka.png',
   ];
 
   return (
@@ -93,19 +120,19 @@ export default function Home() {
       {/* ========== NEW ARRIVALS ========== */}
       <section className={styles.arrivalsSection}>
         <div className={styles.arrivalsInner}>
-          <div className="section-label" style={{ marginBottom: '2.5rem' }}>NEW ARRIVALS</div>
-           <div className={styles.tabRow}>
-             <div className={styles.tabs}>
-               <button className={activeTab === 'all' ? styles.tabActive : styles.tab} onClick={() => handleTabClick('all')}>All</button>
-               {/* <button className={styles.tab}>Men&apos;s</button> */}
-               <button className={activeTab === 'trending' ? styles.tabActive : styles.tab} onClick={() => handleTabClick('trending')}>Trending</button>
-             </div>
-             <div className={styles.carouselNav}>
-               <button onClick={handleCarouselLeft} className={styles.carouselBtn}><ChevronLeft size={18} /></button>
-               <button onClick={handleCarouselRight} className={styles.carouselBtn}><ChevronRight size={18} /></button>
-             </div>
-           </div>
-           <div className={styles.productGrid} ref={carouselRef}>
+          <div className="section-label" style={{ marginBottom: '2.5rem', paddingLeft: '2rem' }}>NEW ARRIVALS</div>
+          <div className={styles.tabRow}>
+            <div className={styles.tabs}>
+              <button className={activeTab === 'all' ? styles.tabActive : styles.tab} onClick={() => handleTabClick('all')}>All</button>
+              {/* <button className={styles.tab}>Men&apos;s</button> */}
+              <button className={activeTab === 'trending' ? styles.tabActive : styles.tab} onClick={() => handleTabClick('trending')}>Trending</button>
+            </div>
+            <div className={styles.carouselNav}>
+              <button onClick={handleCarouselLeft} className={styles.carouselBtn}><ChevronLeft size={18} /></button>
+              <button onClick={handleCarouselRight} className={styles.carouselBtn}><ChevronRight size={18} /></button>
+            </div>
+          </div>
+          <div className={styles.productGrid} ref={carouselRef}>
             {loading ? (
               // Loading skeleton
               Array.from({ length: 14 }).map((_, i) => (
@@ -118,28 +145,31 @@ export default function Home() {
             ) : newArrivals.length === 0 ? (
               <p className={styles.noProducts}>No products found</p>
             ) : (
-               newArrivals.map(product => (
-                 <Link href={`/product/${product._id}`} key={product._id} className={styles.productCard}>
-                   <div className={styles.productImage}>
-                     <img src={product.image} alt={product.title} />
-                     <button className={styles.wishlistBtn} onClick={e => e.preventDefault()}>
-                       <Heart size={16} strokeWidth={1.5} />
-                     </button>
-                     <button 
-                       className={styles.addToCartBtn} 
-                       onClick={(e) => handleAddToCart(e, product._id)}
-                       title="Add to Cart"
-                     >
-                       <ShoppingCart size={16} strokeWidth={1.5} />
-                       <span>Add to Cart</span>
-                     </button>
-                   </div>
-                   <div className={styles.colorDots}>
-                     {product.colors?.slice(0, 3).map((color, idx) => (
-                       <span key={idx} className={styles.dot} style={{ background: color.hex || color }} />
-                     ))}
-                   </div>
-                   {product.badge && <span className={styles.badge}>{product.badge}</span>}
+              newArrivals.map(product => (
+                <Link href={`/product/${product._id}`} key={product._id} className={styles.productCard}>
+                  <div className={styles.productImage}>
+                    <img src={product.image} alt={product.title} />
+                    <button 
+                      className={styles.wishlistBtn} 
+                      onClick={(e) => handleFavoriteClick(e, product._id)}
+                      aria-label={isFavorited(product._id) ? 'Remove from favorites' : 'Add to favorites'}
+                    >
+                      <Heart 
+                        size={16} 
+                        strokeWidth={1.5}
+                        fill={isFavorited(product._id) ? 'currentColor' : 'none'}
+                      />
+                    </button>
+                    <button
+                      className={styles.addToCartBtn}
+                      onClick={(e) => handleAddToCart(e, product._id)}
+                      title="Add to Cart"
+                    >
+                      <ShoppingCart size={16} strokeWidth={1.5} />
+                      <span>Add to Cart</span>
+                    </button>
+                  </div>
+                  {product.badge && <span className={styles.badge}>{product.badge}</span>}
                   <h3 className={styles.productName}>{product.title}</h3>
                   <p className={styles.productPrice}>{formatPrice(product.price)}</p>
                 </Link>
@@ -150,42 +180,16 @@ export default function Home() {
       </section>
 
       {/* ========== CLOTHI BRAND SECTION ========== */}
-      <ClotheiBrand />
+      {/* <ClotheiBrand /> */}
 
-      {/* ========== LIFESTYLE DUO ========== */}
-      <section className={styles.lifestyleDuo}>
-        <div className={styles.lifestyleDuoInner}>
-          <Link href="/catalog" className={styles.lifestyleDuoCard}>
-            <img src="/collection_duo.png" alt="Men's Indigo" style={{ objectPosition: 'left center' }} />
-            <div className={styles.splitOverlay} />
-            <div className={styles.lifestyleDuoLabel}>
-              <span className={styles.lifestyleDuoKicker}>MEN&apos;S EDIT</span>
-              <h3 className={styles.lifestyleDuoTitle}>The Indigo Collection</h3>
-            </div>
-          </Link>
-          <Link href="/catalog" className={styles.lifestyleDuoCard}>
-            <img src="/collection_duo.png" alt="Women's Transitional" style={{ objectPosition: 'right center' }} />
-            <div className={styles.splitOverlay} />
-            <div className={styles.lifestyleDuoLabel}>
-              <span className={styles.lifestyleDuoKicker}>WOMEN&apos;S EDIT</span>
-              <h3 className={styles.lifestyleDuoTitle}>Transitional Knits</h3>
-            </div>
-          </Link>
-        </div>
-      </section>
+      {/* ========== MATCH THE MOOD ========== */}
+      <MatchTheMood />
 
-      {/* ========== DESIGN STUDIO BANNER ========== */}
-      <section className={styles.studioBanner}>
-        <img src="/hero_coastal.png" alt="The Design Studio" className={styles.studioBg} />
-        <div className={styles.studioOverlay} />
-        <div className={styles.studioContent}>
-          <h2 className={styles.studioTitle}>THE DESIGN STUDIO</h2>
-          <Link href="/catalog" className={styles.studioLink}>LEARN MORE</Link>
-        </div>
-      </section>
+      {/* ========== SHOP BY OCCASION ========== */}
+      <ShopByOccasion />
 
       {/* ========== BRAND VALUES ========== */}
-      <section className={styles.valuesSection}>
+      {/* <section className={styles.valuesSection}>
         <div className={styles.valuesInner}>
           <div className={styles.valueCard}>
             <div className={styles.valueImg}>
@@ -209,7 +213,7 @@ export default function Home() {
             <Link href="/" className={styles.valueLink}>LEARN MORE</Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <SoulOfClothi />
       <StoriesInMotion />

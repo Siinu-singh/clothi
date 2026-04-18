@@ -19,7 +19,7 @@ export default function ImageSlider({ images = [] }) {
 
     autoPlayRef.current = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % slides.length);
-    }, 4000); // Change image every 4 seconds
+    }, 3000); // Change image every 3 seconds
 
     return () => clearInterval(autoPlayRef.current);
   }, [slides.length]);
@@ -39,7 +39,39 @@ export default function ImageSlider({ images = [] }) {
             style={{
               backgroundImage: `url('${image}')`,
             }}
-          />
+          >
+            {/* Text Overlay - First slide */}
+            {index === 0 && (
+              <div className={styles.textOverlay}>
+                <h1 className={styles.mainText}>Prime Basics</h1>
+                <p className={styles.subtitleText}>Prime Model Minimal</p>
+              </div>
+            )}
+
+            {/* Text Overlay - Second slide */}
+            {index === 1 && (
+              <div className={styles.crownOverlay}>
+                <h2 className={styles.crownTitle}>The Crown Series</h2>
+                <p className={styles.crownSubtitle}>Clean. Refined. Timeless</p>
+              </div>
+            )}
+
+            {/* Text Overlay - Third slide */}
+            {index === 2 && (
+              <div className={styles.motionOverlay}>
+                <h2 className={styles.motionTitle}>Motion<span className={styles.motionX}> X</span></h2>
+                <p className={styles.motionSubtitle}>Swift. Strong. Agile</p>
+              </div>
+            )}
+
+            {/* Text Overlay - Fourth slide */}
+            {index === 3 && (
+              <div className={styles.zenOverlay}>
+                <h2 className={styles.zenTitle}>Zen-G by clothi</h2>
+                <p className={styles.zenSubtitle}>Relaxed. Effortless. Everyday</p>
+              </div>
+            )}
+          </div>
         ))}
       </div>
 

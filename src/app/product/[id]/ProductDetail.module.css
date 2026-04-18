@@ -3,8 +3,46 @@
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
 @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
 .imageCol {}
-.mainImage { background: var(--color-surface-dim); border-radius: 8px; overflow: hidden; }
+.mainImage { position: relative; background: var(--color-surface-dim); border-radius: 8px; overflow: hidden; }
 .mainImage img { width: 100%; height: auto; display: block; }
+
+/* Image Navigation Overlay Buttons */
+.imageNavBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.85);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #111827;
+  transition: all 0.2s ease;
+  z-index: 10;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+}
+
+.mainImage:hover .imageNavBtn {
+  opacity: 1;
+}
+
+.imageNavBtn:hover {
+  background: #fff;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.prevBtn {
+  left: 1rem;
+}
+
+.nextBtn {
+  right: 1rem;
+}
 
 /* Image Gallery */
 .imageGallery { 

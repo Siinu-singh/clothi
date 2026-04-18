@@ -1,0 +1,96 @@
+.container {
+   margin: 1.2rem 0; /* Equivalent to my-7 */
+   width: 100%;
+ }
+
+ @media (min-width: 768px) {
+   .container {
+     margin: 1.5rem 0; /* Equivalent to md:my-8 */
+   }
+ }
+
+.title {
+   text-align: center;
+   text-transform: uppercase;
+   margin: 1rem 0; /* Equivalent to my-4 */
+   font-family: var(--font-headline, sans-serif); /* Preserved theme integration */
+   font-size: 2.25rem;
+   font-weight: 700;
+   color: var(--color-on-surface); /* Preserved theme color */
+ }
+
+.flexWrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap; /* flex-wrap */
+  gap: 5px; /* gap-[5px] */
+  overflow: visible; /* overflow-visible */
+  padding: 0 1rem; /* Added slight padding so it doesn't touch screen edges on mobile */
+}
+
+.cardContainer {
+  cursor: pointer;
+  flex-shrink: 0; /* flex-shrink-0 */
+  text-decoration: none;
+  display: block;
+}
+
+.cardInner {
+   position: relative;
+   display: flex;
+   border: 1px solid var(--color-outline-variant, #e5e7eb); /* "border" class */
+   border-radius: 0; /* no border radius on snitch */
+   aspect-ratio: 3/4; /* aspect-[3/4] */
+   cursor: pointer;
+   height: 340px;
+   width: 250px;
+ }
+
+.image {
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   inset: 0px;
+   object-fit: cover;
+   color: transparent;
+   /* NO ZOOM OR HOVER EFFECTS - AS REQUESTED */
+ }
+
+ .imageLuxury {
+   object-position: center top;
+ }
+
+.labelOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 24px;
+  padding-top: 60px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  pointer-events: none;
+}
+
+.labelTextTop {
+  color: white;
+  font-family: inherit;
+  font-weight: 300;
+  font-size: 1.85rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.labelTextBottom {
+  color: #ffaa00; /* Golden yellow */
+  font-family: inherit;
+  font-weight: 300;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}

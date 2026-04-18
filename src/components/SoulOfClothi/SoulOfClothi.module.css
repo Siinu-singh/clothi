@@ -1,5 +1,5 @@
 .section {
-  padding: 5rem 0;
+  padding: 2rem 0;
   background: #fdfdfd;
 }
 .container {
@@ -23,7 +23,7 @@
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
-  border-radius: 8px;
+  border-radius: 0;
   overflow: hidden;
 }
 .image {
@@ -45,8 +45,8 @@
 }
 .title {
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 300;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
   color: var(--color-on-surface);
   margin-bottom: 0.5rem;
 }
@@ -78,15 +78,22 @@
 .button:hover {
   background: var(--color-primary);
 }
+.watermarkContainer {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
 .watermark {
-  position: absolute;
-  top: 50%;
-  right: -5%;
-  transform: translateY(-50%) rotate(-90deg);
   font-size: 6rem;
   font-weight: 900;
   font-family: var(--font-heading);
-  color: rgba(0,0,0,0.03);
+  color: rgba(0,0,0,0.15);
   pointer-events: none;
   white-space: nowrap;
+}
+.watermarkLogo {
+  height: 6rem;
+  width: auto;
+  object-fit: contain;
 }

@@ -25,7 +25,10 @@ export default function SoulOfClothi() {
             READ THE STORY
           </Link>
           
-          <div className={styles.watermark}>EST. 2024</div>
+          <div className={styles.watermarkContainer}>
+            <img src="/clothi.png" alt="Clothi Logo" className={styles.watermarkLogo} />
+            <div className={styles.watermark}>CLOTHI</div>
+          </div>
         </div>
       </div>
     </section>

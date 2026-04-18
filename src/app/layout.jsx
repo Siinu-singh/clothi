@@ -1,6 +1,7 @@
 import './globals.css';
 import Navbar from '../components/Navbar/Navbar';
 import AnnouncementBar from '../components/AnnouncementBar/AnnouncementBar';
+import Newsletter from '../components/Newsletter/Newsletter';
 import Footer from '../components/Footer/Footer';
 import Providers from '../components/Providers/Providers';
 import { Analytics } from "@vercel/analytics/react";
@@ -154,9 +155,10 @@ export default function RootLayout({ children }) {
         <JsonLd data={organizationSchema} />
         <JsonLd data={websiteSchema} />
         <Providers>
-          <AnnouncementBar />
+          {/* <AnnouncementBar /> */}
           <Navbar />
           <main>{children}</main>
+          <Newsletter />
           <Footer />
           <Analytics />
         </Providers>

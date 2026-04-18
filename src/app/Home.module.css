@@ -70,14 +70,14 @@
 
 /* ======== NEW ARRIVALS ======== */
 .arrivalsSection {
-  padding: 5rem 0;
-  background: var(--color-bg);
-  overflow: hidden;
-}
+   padding: 2rem 0;
+   background: var(--color-bg);
+   overflow: hidden;
+ }
 .arrivalsInner {
   max-width: 100%;
   margin: 0 auto;
-  padding: 0;
+  padding: 0 2rem;
 }
 .tabRow {
   display: flex;

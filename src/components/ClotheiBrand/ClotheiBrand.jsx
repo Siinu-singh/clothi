@@ -14,6 +14,7 @@ export default function ClotheiBrand() {
       title: 'SKYCLUB COLLECTION',
       buttonText: 'SHOP NOW',
       link: '/catalog',
+      icon: 'tshirt',
     },
     {
       id: 2,
@@ -22,6 +23,7 @@ export default function ClotheiBrand() {
       title: 'MENS WINTER STAPLES',
       buttonText: 'EXPLORE',
       link: '/catalog',
+      icon: 'pants',
     },
     {
       id: 3,
@@ -30,8 +32,163 @@ export default function ClotheiBrand() {
       title: 'SHADES OF WINTER',
       buttonText: 'DISCOVER',
       link: '/catalog',
+      icon: 'jacket',
     }
   ];
+
+  // SVG icon components for clothing items
+  const getClothingIcon = (iconType, isActive) => {
+    const iconProps = {
+      width: '32px',
+      height: '32px',
+      viewBox: '0 0 32 32',
+      fill: 'none',
+      xmlns: 'http://www.w3.org/2000/svg',
+      className: isActive ? styles.activeIcon : styles.inactiveIcon,
+    };
+
+    switch (iconType) {
+      case 'tshirt':
+        return (
+          <svg {...iconProps}>
+            {/* T-Shirt Body */}
+            <path
+              d="M8 6L6 10V22C6 23.6569 7.34315 25 9 25H23C24.6569 25 26 23.6569 26 22V10L24 6H8Z"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+            {/* Neck */}
+            <circle cx="16" cy="8" r="2" fill="white" />
+            {/* Left Sleeve */}
+            <path
+              d="M8 10L3 12"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Right Sleeve */}
+            <path
+              d="M24 10L29 12"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Center Line */}
+            <path
+              d="M16 10V20"
+              stroke="white"
+              strokeWidth="1"
+              strokeLinecap="round"
+              opacity="0.5"
+            />
+          </svg>
+        );
+      case 'pants':
+        return (
+          <svg {...iconProps}>
+            {/* Waist */}
+            <path
+              d="M8 8H24C24 8 24 10 24 12"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+            {/* Left Pant Leg */}
+            <path
+              d="M10 12V24C10 25.1046 9.10457 26 8 26H8"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Right Pant Leg */}
+            <path
+              d="M22 12V24C22 25.1046 22.8954 26 24 26H24"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Main Body */}
+            <path
+              d="M9 8L8 10V12H24V10L23 8H9Z"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+            {/* Center seam */}
+            <path
+              d="M16 12V24"
+              stroke="white"
+              strokeWidth="1"
+              strokeLinecap="round"
+              opacity="0.5"
+            />
+          </svg>
+        );
+      case 'jacket':
+        return (
+          <svg {...iconProps}>
+            {/* Outer Jacket */}
+            <path
+              d="M5 9V22C5 23.6569 6.34315 25 8 25H24C25.6569 25 27 23.6569 27 22V9L16 4L5 9Z"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+            {/* Left Lapel */}
+            <path
+              d="M5 9L11 14"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Right Lapel */}
+            <path
+              d="M27 9L21 14"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Front Opening */}
+            <path
+              d="M16 9V22"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Collar */}
+            <path
+              d="M14 10L16 8L18 10"
+              stroke="white"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="white"
+              opacity="0.7"
+            />
+            {/* Button Detail */}
+            <circle cx="16" cy="16" r="1" fill="white" opacity="0.6" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -63,33 +220,14 @@ export default function ClotheiBrand() {
       ))}
 
       <div className={styles.pagination}>
-        {slides.map((_, index) => (
+        {slides.map((slide, index) => (
           <button
             key={index}
             className={`${styles.dot} ${index === currentSlide ? styles.activeDot : ''}`}
             onClick={() => setCurrentSlide(index)}
             aria-label={`Go to slide ${index + 1}`}
           >
-            <svg
-              width="20px"
-              height="20px"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {index === currentSlide ? (
-                <circle cx="10" cy="10" r="5" fill="white" />
-              ) : null}
-              <circle
-                cx="10"
-                cy="10"
-                r="9"
-                stroke="white"
-                strokeWidth="1.5px"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            {getClothingIcon(slide.icon, index === currentSlide)}
           </button>
         ))}
       </div>

@@ -5,11 +5,20 @@
   z-index: 100;
   background: var(--color-white);
   border-bottom: 1px solid var(--color-surface-high);
+  opacity: 1;
+  transition: opacity 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+
+.navbar.scrolled {
+  opacity: 0.85;
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom-color: rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(8px);
 }
 
 .inner {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 0 2rem;
   height: 64px;
@@ -17,48 +26,94 @@
   position: relative;
 }
 
-.center {
+.left {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 3rem;
+  flex: 1;
 }
 
-.brand {
+.navLinks {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-family: var(--font-body);
-  font-size: 1.125rem;
-  font-weight: 800;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--color-on-surface);
-  transition: opacity 0.15s ease;
-  text-decoration: none;
+  list-style: none;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
 }
+
+.navLink {
+   text-decoration: none;
+   color: var(--color-on-surface);
+   font-family: var(--font-body);
+   font-size: 0.8125rem;
+   font-weight: 500;
+   letter-spacing: 0.05em;
+   text-transform: uppercase;
+   transition: all 0.3s ease;
+   display: inline-block;
+   padding-bottom: 2px;
+   position: relative;
+ }
+
+ .navLink::after {
+   content: '';
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   width: 0;
+   height: 2px;
+   background-color: #000000;
+   transition: width 0.5s ease;
+ }
+
+ .navLink:hover::after {
+   width: 100%;
+ }
+
+.brand {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: -0.1rem;
+   font-family: var(--font-body);
+   font-size: 1.5rem;
+   font-weight: 900;
+   letter-spacing: 0.3em;
+   text-transform: uppercase;
+   color: var(--color-on-surface);
+   transition: opacity 0.15s ease;
+   text-decoration: none;
+ }
 
 .brand:hover {
   opacity: 0.8;
 }
 
 .logo {
-  height: 40px;
-  width: auto;
-  object-fit: contain;
-  display: flex;
-  align-items: center;
-}
+   height: 90px;
+   width: 90px;
+   object-fit: contain;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin-right: -5px;
+ }
 
 .right {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  position: absolute;
-  right: 2rem;
+  flex-shrink: 0;
 }
 
 .searchBox {
   display: none;
+}
+
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 @media (min-width: 1024px) {

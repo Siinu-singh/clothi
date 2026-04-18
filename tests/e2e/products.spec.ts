@@ -107,8 +107,8 @@ test.describe('Catalog Filtering', () => {
     // Get initial count
     const initialCount = await catalogPage.getProductCount()
     
-    // Filter by Men category (using exact match)
-    await catalogPage.filterByCategory('Men')
+    // Filter by The Crown Series category (using exact match)
+    await catalogPage.filterByCategory('The Crown Series')
     
     // Verify filter was applied
     const resultText = await catalogPage.getResultCountText()
@@ -141,8 +141,8 @@ test.describe('Catalog Filtering', () => {
     await page.waitForLoadState('networkidle')
     await catalogPage.waitForProductsToLoad()
     
-    // Apply a filter
-    await catalogPage.filterByCategory('Women')
+     // Apply a filter
+    await catalogPage.filterByCategory('Zen-G by Clothi')
     await page.waitForTimeout(500)
     
     // Clear filters

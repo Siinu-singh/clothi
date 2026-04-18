@@ -7,14 +7,18 @@ import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useFavorites } from '../../context/FavoritesContext';
 import CartDropdown from '../CartDropdown/CartDropdown';
+import SearchDropdown from '../SearchDropdown/SearchDropdown';
 import styles from './Navbar.module.css';
 
 const Navbar = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const userMenuRef = useRef(null);
   const cartDropdownRef = useRef(null);
+  const searchContainerRef = useRef(null);
   const { user, logout, loading } = useAuth();
   const { cart } = useCart();
   const { favorites } = useFavorites();
@@ -33,9 +37,21 @@ const Navbar = () => {
       if (cartDropdownRef.current && !cartDropdownRef.current.contains(event.target)) {
         setCartDropdownOpen(false);
       }
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setSearchOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle scroll for navbar transparency effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleLogout = async () => {
@@ -57,20 +73,37 @@ const Navbar = () => {
 
   return (
     <nav
-      className={styles.navbar}
+      className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}
       onMouseLeave={() => setActiveMenu(null)}
     >
        <div className={styles.inner}>
-         <div className={styles.center}>
-           <Link href="/" className={styles.brand}>
-             <img src="/clothi.png" alt="Clothi Logo" className={styles.logo} />
-             <span>CLOTHI</span>
-           </Link>
-         </div>
+          <div className={styles.left}>
+            <Link href="/" className={styles.brand}>
+              <img src="/Logo.png" alt="Clothi Logo" className={styles.logo} />
+              <span>CLOTHI</span>
+            </Link>
+            <ul className={styles.navLinks}>
+              <li><Link href="/catalog" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>SHOP ALL</Link></li>
+              <li><Link href="/catalog?category=polo" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>POLO</Link></li>
+              <li><Link href="/catalog?category=oversize" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>OVERSIZE</Link></li>
+              <li><Link href="/catalog?category=casual" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>CASUAL</Link></li>
+              <li><Link href="/catalog?category=dry-fit" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>DRY-FIT</Link></li>
+            </ul>
+          </div>
         <div className={styles.right}>
-          <div className={styles.searchBox}>
-            <Search size={16} strokeWidth={1.5} color="var(--color-outline)" />
-            <input className={styles.searchInput} type="text" placeholder="Search the store" />
+          <div className={styles.searchContainer} ref={searchContainerRef}>
+            <div 
+              className={`${styles.searchBox} ${searchOpen ? styles.searchBoxActive : ''}`}
+            >
+              <Search size={16} strokeWidth={1.5} color="var(--color-outline)" />
+              <input 
+                 className={styles.searchInput} 
+                 type="text" 
+                 placeholder="Search" 
+                 onFocus={() => setSearchOpen(true)}
+               />
+            </div>
+            <SearchDropdown isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
           </div>
           
           {/* Favorites Button */}
