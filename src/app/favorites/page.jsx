@@ -33,8 +33,14 @@ export default function FavoritesPage() {
   const fetchFavoriteProducts = async () => {
     try {
       setLoadingProducts(true);
-      // Fetch full product details for each favorite
+      // Use cached product data from favorites when available, otherwise fetch
       const productPromises = favorites.map(async (fav) => {
+        // If we already have cached product data from the context, use it
+        if (fav.product) {
+          return fav.product;
+        }
+        
+        // Otherwise fetch it
         const productId = fav.productId || fav._id;
         try {
           const response = await apiFetch(`/products/${productId}`);

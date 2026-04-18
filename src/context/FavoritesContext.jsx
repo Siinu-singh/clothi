@@ -26,20 +26,34 @@ export function FavoritesProvider({ children }) {
     try {
       setLoading(true);
       const response = await apiFetch('/favorites');
-      // Handle different response formats from API
+      // Backend returns: { success: true, data: { favorites: [...], pagination: {...} } }
+      // Each favorite item has: { _id, userId, productId: {...full_product_object}, createdAt }
       const favoritesData = response.data?.favorites || response.favorites || response.data || [];
-      // Normalize to array, ensure we have productId for each item
+      // Store favorites with productId as string ID and keep full product data
       const normalized = Array.isArray(favoritesData) ? favoritesData.map(item => {
-        // If item is a string (product ID), wrap it
-        if (typeof item === 'string') {
-          return { productId: item };
+        if (!item) return null;
+        
+        // Extract product ID from populated productId field
+        let productId = null;
+        let productData = null;
+        
+        if (item.productId) {
+          if (typeof item.productId === 'object' && item.productId._id) {
+            // Backend populated productId with full product object
+            productId = String(item.productId._id);
+            productData = item.productId;
+          } else if (typeof item.productId === 'string') {
+            // productId is already a string
+            productId = item.productId;
+          }
         }
-        // If item is an object without productId, use _id as productId
-        if (item && !item.productId && item._id) {
-          return { ...item, productId: item._id };
-        }
-        return item;
-      }) : [];
+        
+        return {
+          _id: item._id,
+          productId: productId,
+          product: productData, // Cache full product data to avoid re-fetch
+        };
+      }).filter(Boolean) : [];
       setFavorites(normalized);
     } catch (err) {
       console.error('Failed to load favorites', err);
