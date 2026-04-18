@@ -26,7 +26,21 @@ export function FavoritesProvider({ children }) {
     try {
       setLoading(true);
       const response = await apiFetch('/favorites');
-      setFavorites(response.data?.favorites || []);
+      // Handle different response formats from API
+      const favoritesData = response.data?.favorites || response.favorites || response.data || [];
+      // Normalize to array, ensure we have productId for each item
+      const normalized = Array.isArray(favoritesData) ? favoritesData.map(item => {
+        // If item is a string (product ID), wrap it
+        if (typeof item === 'string') {
+          return { productId: item };
+        }
+        // If item is an object without productId, use _id as productId
+        if (item && !item.productId && item._id) {
+          return { ...item, productId: item._id };
+        }
+        return item;
+      }) : [];
+      setFavorites(normalized);
     } catch (err) {
       console.error('Failed to load favorites', err);
       setFavorites([]);
@@ -45,17 +59,22 @@ export function FavoritesProvider({ children }) {
     }
 
     try {
+      // Ensure productId is a string to prevent [object Object] in URLs
+      const idString = String(productId);
+      
       const response = await apiFetch('/favorites/add', {
         method: 'POST',
-        body: JSON.stringify({ productId })
+        body: JSON.stringify({ productId: idString })
       });
       
-      // Update local state
+      // Update local state with properly formatted object
       setFavorites(prev => {
         // Check if product is already in favorites
-        const exists = prev.some(item => item._id === productId || item.productId === productId);
+        const exists = prev.some(item => 
+          String(item._id) === idString || String(item.productId) === idString
+        );
         if (!exists) {
-          return [...prev, { productId }];
+          return [...prev, { productId: idString, _id: idString }];
         }
         return prev;
       });
@@ -73,12 +92,16 @@ export function FavoritesProvider({ children }) {
     }
 
     try {
-      await apiFetch(`/favorites/${productId}`, {
+      const idString = String(productId);
+      
+      await apiFetch(`/favorites/${idString}`, {
         method: 'DELETE'
       });
       
       // Update local state
-      setFavorites(prev => prev.filter(item => item._id !== productId && item.productId !== productId));
+      setFavorites(prev => prev.filter(item => 
+        String(item._id) !== idString && String(item.productId) !== idString
+      ));
       
       return true;
     } catch (err) {
@@ -88,7 +111,10 @@ export function FavoritesProvider({ children }) {
   };
 
   const isFavorited = (productId) => {
-    return favorites.some(item => item._id === productId || item.productId === productId);
+    const idString = String(productId);
+    return favorites.some(item => 
+      String(item._id) === idString || String(item.productId) === idString
+    );
   };
 
   const checkFavorite = async (productId) => {
@@ -97,7 +123,8 @@ export function FavoritesProvider({ children }) {
     }
 
     try {
-      const data = await apiFetch(`/favorites/${productId}/check`);
+      const idString = String(productId);
+      const data = await apiFetch(`/favorites/${idString}/check`);
       return data.isFavorited || data.favorited || false;
     } catch (err) {
       console.error('Check favorite failed', err);
