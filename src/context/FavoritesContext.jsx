@@ -48,6 +48,8 @@ export function FavoritesProvider({ children }) {
           }
         }
         
+        if (!productId) return null; // Drop broken/orphaned database links
+        
         return {
           _id: item._id,
           productId: productId,

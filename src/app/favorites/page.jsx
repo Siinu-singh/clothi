@@ -41,7 +41,9 @@ export default function FavoritesPage() {
         }
         
         // Otherwise fetch it
-        const productId = fav.productId || fav._id;
+        const productId = fav.productId;
+        if (!productId) return null;
+        
         try {
           const response = await apiFetch(`/products/${productId}`);
           return response.data || response;
