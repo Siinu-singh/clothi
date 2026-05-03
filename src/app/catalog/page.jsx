@@ -25,5 +25,13 @@ export const metadata = {
   },
 };
 
-// Re-export the client component
-export { default } from './CatalogClient';
+import { Suspense } from 'react';
+import CatalogClient from './CatalogClient';
+
+export default function CatalogPage() {
+  return (
+    <Suspense fallback={<div>Loading catalog...</div>}>
+      <CatalogClient />
+    </Suspense>
+  );
+}

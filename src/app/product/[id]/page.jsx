@@ -21,7 +21,8 @@ async function getProduct(id) {
 
 // Dynamic metadata generation for SEO
 export async function generateMetadata({ params }) {
-  const product = await getProduct(params.id);
+  const resolvedParams = await params;
+  const product = await getProduct(resolvedParams.id);
   
   if (!product) {
     return {
@@ -50,7 +51,7 @@ export async function generateMetadata({ params }) {
       title: `${product.title} | CLOTHI`,
       description,
       type: 'website',
-      url: `${SITE_URL}/product/${params.id}`,
+      url: `${SITE_URL}/product/${resolvedParams.id}`,
       images: [
         {
           url: product.image,
@@ -67,14 +68,15 @@ export async function generateMetadata({ params }) {
       images: [product.image],
     },
     alternates: {
-      canonical: `/product/${params.id}`,
+      canonical: `/product/${resolvedParams.id}`,
     },
   };
 }
 
 // Server component wrapper for product page
 export default async function ProductPage({ params }) {
-  const product = await getProduct(params.id);
+  const resolvedParams = await params;
+  const product = await getProduct(resolvedParams.id);
 
   // Generate structured data for SEO
   const productSchema = product ? generateProductSchema(product, SITE_URL) : null;
@@ -82,14 +84,14 @@ export default async function ProductPage({ params }) {
     { name: 'Home', url: '/' },
     { name: 'Catalog', url: '/catalog' },
     { name: product.category, url: `/catalog?category=${encodeURIComponent(product.category)}` },
-    { name: product.title, url: `/product/${params.id}` },
+    { name: product.title, url: `/product/${resolvedParams.id}` },
   ], SITE_URL) : null;
 
   return (
     <>
       {productSchema && <JsonLd data={productSchema} />}
       {breadcrumbSchema && <JsonLd data={breadcrumbSchema} />}
-      <ProductDetailClient params={params} initialProduct={product} />
+      <ProductDetailClient params={resolvedParams} initialProduct={product} />
     </>
   );
 }

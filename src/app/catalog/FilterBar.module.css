@@ -1,0 +1,350 @@
+/* Container */
+.filterContainer {
+  position: relative;
+  width: 100%;
+}
+
+/* --- DESKTOP --- */
+.desktopFilterBar {
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-surface);
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--color-outline-variant);
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .desktopFilterBar {
+    display: flex;
+  }
+}
+
+.dropdownGroup {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.productCountWrapper {
+  margin-right: 1rem;
+}
+
+.productCountText {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-on-surface-variant);
+}
+
+.dropdownWrapper {
+  position: relative;
+}
+
+.dropdownTrigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--color-outline-variant);
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-on-surface);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.dropdownTrigger:hover {
+  border-color: var(--color-on-surface);
+}
+
+.dropdownTrigger.hasSelection {
+  background: rgba(155, 67, 41, 0.05); /* very light primary */
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.rotateIcon {
+  transform: rotate(180deg);
+  transition: transform 0.2s;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  background: var(--color-white);
+  border: 1px solid var(--color-outline-variant);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  border-radius: 4px;
+  min-width: 200px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dropdownMenuRight {
+  left: auto;
+  right: 0;
+}
+
+.dropdownHeader {
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+  text-transform: uppercase;
+  background: var(--color-surface-dim);
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.dropdownItem {
+  padding: 0.85rem 1.25rem;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-surface-high);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: var(--color-on-surface);
+}
+
+.dropdownItem:last-child {
+  border-bottom: none;
+}
+
+.dropdownItem:hover {
+  background: var(--color-surface-dim);
+}
+
+.selectedItem {
+  font-weight: 600;
+  color: var(--color-primary);
+  background: rgba(155, 67, 41, 0.03);
+}
+
+.clearDesktopBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 0.5rem;
+}
+
+/* --- MOBILE --- */
+.mobileFilterStrip {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--color-outline-variant);
+  margin-bottom: 1.5rem;
+  background: var(--color-surface);
+}
+
+@media (min-width: 768px) {
+  .mobileFilterStrip {
+    display: none;
+  }
+}
+
+.productCountMobile {
+  padding: 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-on-surface-variant);
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.mobileActions {
+  display: flex;
+}
+
+.mobileStripBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  cursor: pointer;
+}
+
+.divider {
+  width: 1px;
+  background: var(--color-outline-variant);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-primary);
+  border-radius: 50%;
+}
+
+.mobileSortDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-outline-variant);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.mobileOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(27, 28, 26, 0.6);
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.bottomSheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  z-index: 1001;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.sheetHeader {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.sheetHeaderTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sheetHeaderTop h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-on-surface);
+}
+
+.sheetHeaderTop button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--color-on-surface-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sheetContent {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.sheetSection {
+  margin-bottom: 2rem;
+}
+
+.sheetSection h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.chipRow {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 0.6rem 1.25rem;
+  border: 1px solid var(--color-outline-variant);
+  background: transparent;
+  color: var(--color-on-surface);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.chipSelected {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.sheetFooter {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--color-outline-variant);
+  display: flex;
+  gap: 1rem;
+  background: var(--color-white);
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+.resetBtn {
+  flex: 1;
+  padding: 1rem;
+  background: transparent;
+  border: 1px solid var(--color-on-surface);
+  color: var(--color-on-surface);
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.applyBtn {
+  flex: 2;
+  padding: 1rem;
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  color: var(--color-white);
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.applyBtn:hover {
+  background: var(--color-primary-container);
+}

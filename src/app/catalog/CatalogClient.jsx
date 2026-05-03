@@ -1,19 +1,25 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Heart } from 'lucide-react';
 import { apiFetch } from '../../lib/api';
 import { useFavorites } from '../../context/FavoritesContext';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { useLoginPrompt } from '../../context/LoginPromptContext';
+import { useCart } from '../../context/CartContext';
+import FilterBar from './FilterBar';
 import styles from './Catalog.module.css';
 
 export default function CatalogClient() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get('category') || '';
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedSize, setSelectedSize] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [hoverImage, setHoverImage] = useState({});
@@ -22,6 +28,16 @@ export default function CatalogClient() {
   const { addToFavorites, removeFromFavorites, isFavorited } = useFavorites();
   const { toast } = useToast();
   const { showLoginPrompt } = useLoginPrompt();
+  const { addToCart } = useCart();
+
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+    } else {
+      setSelectedCategory('');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetchProducts();
@@ -72,90 +88,67 @@ export default function CatalogClient() {
     }
   };
 
+  const handleAddToCart = async (e, p) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const success = await addToCart(p._id, 1, p.sizes?.[0] || 'M', p.colors?.[0] || 'Default');
+    if (success) {
+      toast.success('Added to cart');
+    }
+  };
+
   const formatPrice = (price) => {
     return `$${price.toFixed(0)}`;
   };
 
-  const categories = ['', 'Men', 'Women', 'Accessories', 'Footwear'];
+  const categories = ['', 'POLO', 'OVERSIZE', 'CASUAL', 'DRY-FIT'];
   const sizes = ['XS', 'S', 'M', 'L', 'XL'];
 
   return (
     <div className={styles.page}>
+      {/* Top Filter Bar */}
+      <FilterBar
+        categories={categories}
+        sizes={sizes}
+        selectedCategory={selectedCategory}
+        selectedSize={selectedSize}
+        sortBy={sortBy}
+        onCategoryChange={setSelectedCategory}
+        onSizeChange={setSelectedSize}
+        onSortChange={setSortBy}
+        onClearAll={() => {
+          setSelectedCategory('');
+          setSelectedSize('');
+        }}
+      />
+
       <div className={styles.inner}>
         {/* Header */}
         <header className={styles.header}>
           <span className={styles.kicker}>Premium Essentials</span>
           <h1 className={styles.title}>Our Collection</h1>
-          <p className={styles.subtitle}>A collection inspired by coastal winds and the tactile warmth of the Mediterranean sun.</p>
+          
+          {/* Collection Categories */}
+          <div className={styles.collectionCategories}>
+            {categories.map((category) => (
+              <button
+                key={category}
+                className={`${styles.collectionCard} ${selectedCategory === category ? styles.active : ''}`}
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category || 'All'}
+              </button>
+            ))}
+          </div>
         </header>
 
-        <div className={styles.layout}>
-          {/* Filter Sidebar */}
-          <aside className={styles.sidebar}>
-            <div className={styles.filterCard}>
-              <h2 className={styles.filterTitle}>Filters</h2>
-              
-              <div className={styles.filterGroup}>
-                <h3 className={styles.filterLabel}>Category</h3>
-                <div className={styles.categoryList}>
-                  {categories.map(cat => (
-                    <button 
-                      key={cat || 'all'} 
-                      className={`${styles.categoryBtn} ${selectedCategory === cat ? styles.categoryBtnActive : ''}`}
-                      onClick={() => setSelectedCategory(cat)}
-                      aria-pressed={selectedCategory === cat}
-                    >
-                      {cat || 'All'}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className={styles.filterGroup}>
-                <h3 className={styles.filterLabel}>Size</h3>
-                <div className={styles.sizeGrid}>
-                  {sizes.map(s => (
-                    <button 
-                      key={s} 
-                      className={`${styles.sizeBtn} ${selectedSize === s ? styles.sizeBtnActive : ''}`}
-                      onClick={() => setSelectedSize(selectedSize === s ? '' : s)}
-                      aria-pressed={selectedSize === s}
-                      aria-label={`Filter by size ${s}`}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <button 
-                className={styles.clearBtn}
-                onClick={() => {
-                  setSelectedCategory('');
-                  setSelectedSize('');
-                }}
-              >
-                CLEAR ALL
-              </button>
-            </div>
-          </aside>
-
-          {/* Product Grid */}
-          <section className={styles.grid} aria-label="Product listing">
+        {/* Product Grid - Full Width (no sidebar) */}
+        <section className={styles.gridFullWidth} aria-label="Product listing">
             <div className={styles.gridHeader}>
               <span className={styles.resultCount} aria-live="polite">
                 {loading ? 'Loading...' : `Showing ${products.length} results`}
               </span>
-              <select 
-                className={styles.sort}
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                aria-label="Sort products"
-              >
-                <option value="newest">Newest Arrivals</option>
-                <option value="price">Price: Low to High</option>
-                <option value="popular">Popular</option>
-              </select>
             </div>
 
             {error ? (
@@ -200,6 +193,13 @@ export default function CatalogClient() {
                             fill={isFavorited(p._id) ? 'currentColor' : 'none'}
                           />
                         </button>
+                        
+                        <button 
+                          className={styles.addToCartHoverBtn}
+                          onClick={(e) => handleAddToCart(e, p)}
+                        >
+                          ADD TO CART
+                        </button>
                       </div>
                       <div className={styles.productInfo}>
                         <div>
@@ -223,9 +223,8 @@ export default function CatalogClient() {
               <div className={styles.loadMore}>
                 <button className={styles.loadMoreBtn}>DISCOVER MORE</button>
               </div>
-            )}
+             )}
           </section>
-        </div>
       </div>
     </div>
   );

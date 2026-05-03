@@ -48,4 +48,14 @@ blob-report/
 Thumbs.db
 
 # Misc
+*.pem
+*.key
+coverage/
+.env.*.local
+*.md
+
+# Misc
 *.log
+# Added by code-review-graph
+.code-review-graph/
+.playwright-mcp/

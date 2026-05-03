@@ -5,6 +5,7 @@ import { CartProvider } from '../../context/CartContext';
 import { FavoritesProvider } from '../../context/FavoritesContext';
 import { ToastProvider } from '../../context/ToastContext';
 import { LoginPromptProvider } from '../../context/LoginPromptContext';
+import { CollectionProvider } from '../../context/CollectionContext';
 
 const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -16,7 +17,9 @@ export default function Providers({ children }) {
           <LoginPromptProvider>
             <CartProvider>
               <FavoritesProvider>
-                {children}
+                <CollectionProvider>
+                  {children}
+                </CollectionProvider>
               </FavoritesProvider>
             </CartProvider>
           </LoginPromptProvider>

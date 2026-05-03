@@ -3,10 +3,10 @@ import React, { useRef } from 'react';
 import styles from './StoriesInMotion.module.css';
 
 const MOCK_STORIES = [
-  { id: 1, title: 'The Making of Indigo', video: 'https://videos.pexels.com/video-files/4204505/4204505-sd_360_640_24fps.mp4' },
-  { id: 2, title: 'Spring AI Fashion', video: 'https://videos.pexels.com/video-files/5267154/5267154-sd_360_640_25fps.mp4' },
-  { id: 3, title: 'Behind The Scenes', video: 'https://videos.pexels.com/video-files/6406981/6406981-sd_360_640_25fps.mp4' },
-  { id: 4, title: 'Artisan Workshop', video: 'https://videos.pexels.com/video-files/4836648/4836648-sd_360_640_24fps.mp4' },
+  { id: 1, title: 'The Making of Indigo', video: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' },
+  { id: 2, title: 'Spring AI Fashion', video: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4' },
+  { id: 3, title: 'Behind The Scenes', video: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4' },
+  { id: 4, title: 'Artisan Workshop', video: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4' },
 ];
 
 export default function StoriesInMotion() {

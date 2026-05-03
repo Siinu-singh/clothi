@@ -84,10 +84,11 @@ const Navbar = () => {
             </Link>
             <ul className={styles.navLinks}>
               <li><Link href="/catalog" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>SHOP ALL</Link></li>
-              <li><Link href="/catalog?category=polo" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>POLO</Link></li>
-              <li><Link href="/catalog?category=oversize" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>OVERSIZE</Link></li>
-              <li><Link href="/catalog?category=casual" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>CASUAL</Link></li>
-              <li><Link href="/catalog?category=dry-fit" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>DRY-FIT</Link></li>
+              <li><Link href="/collections" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>COLLECTIONS</Link></li>
+              <li><Link href="/catalog?category=POLO" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>POLO</Link></li>
+              <li><Link href="/catalog?category=OVERSIZE" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>OVERSIZE</Link></li>
+              <li><Link href="/catalog?category=CASUAL" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>CASUAL</Link></li>
+              <li><Link href="/catalog?category=DRY-FIT" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>DRY-FIT</Link></li>
             </ul>
           </div>
         <div className={styles.right}>
@@ -140,23 +141,43 @@ const Navbar = () => {
                     <p className={styles.userName}>{user.name || 'User'}</p>
                     <p className={styles.userEmail}>{user.email}</p>
                   </div>
-                  <div className={styles.userDropdownDivider} />
-                  <Link 
-                    href="/orders" 
-                    className={styles.userDropdownItem}
-                    onClick={() => setUserMenuOpen(false)}
-                  >
-                    <Package size={16} strokeWidth={1.5} />
-                    <span>My Orders</span>
-                  </Link>
-                  <Link 
-                    href="/account" 
-                    className={styles.userDropdownItem}
-                    onClick={() => setUserMenuOpen(false)}
-                  >
-                    <Settings size={16} strokeWidth={1.5} />
-                    <span>Account Settings</span>
-                  </Link>
+                   <div className={styles.userDropdownDivider} />
+                   <Link 
+                     href="/orders" 
+                     className={styles.userDropdownItem}
+                     onClick={() => setUserMenuOpen(false)}
+                   >
+                     <Package size={16} strokeWidth={1.5} />
+                     <span>My Orders</span>
+                   </Link>
+{user.role === 'admin' && (
+                      <>
+                        <Link 
+                          href="/admin/products" 
+                          className={styles.userDropdownItem}
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          <Package size={16} strokeWidth={1.5} />
+                          <span>Manage Products</span>
+                        </Link>
+                        <Link 
+                          href="/admin/collections" 
+                          className={styles.userDropdownItem}
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          <Package size={16} strokeWidth={1.5} />
+                          <span>Manage Collections</span>
+                        </Link>
+                      </>
+                    )}
+                   <Link 
+                     href="/account" 
+                     className={styles.userDropdownItem}
+                     onClick={() => setUserMenuOpen(false)}
+                   >
+                     <Settings size={16} strokeWidth={1.5} />
+                     <span>Account Settings</span>
+                   </Link>
                   <div className={styles.userDropdownDivider} />
                   <button 
                     className={styles.userDropdownItem}

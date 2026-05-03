@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://clothi.vercel.app/sitemap.xml
