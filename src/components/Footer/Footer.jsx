@@ -82,7 +82,7 @@ const Footer = () => {
               </div>
               <div className={styles.contactItem}>
                 <Phone size={18} strokeWidth={1.5} />
-                <a href="tel:+91750373590">+91750373590</a>
+                <a href="tel:+917503735901">+91 75037 35901</a>
               </div>
               <div className={styles.socialRow}>
                 <a href="#" className={styles.socialLink}><Instagram size={22} strokeWidth={1.5} /></a>

@@ -1,20 +1,96 @@
 .section {
-  padding: 2rem 0;
+  padding: 4rem 0;
   background: #fdfdfd;
 }
 .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 4rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  gap: 6rem;
   align-items: center;
+}
+@media (max-width: 1200px) {
+  .container {
+    padding: 0 3rem;
+    gap: 4rem;
+  }
 }
 @media (max-width: 900px) {
   .container {
     grid-template-columns: 1fr;
+    gap: 3rem;
+    padding: 0 2.5rem;
+  }
+}
+@media (max-width: 768px) {
+  .section {
+    padding: 3rem 0;
+  }
+  .container {
+    padding: 0 1.5rem;
     gap: 2rem;
+  }
+  .title {
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+  .tagline {
+    font-size: 0.8125rem;
+    margin-bottom: 1.5rem;
+  }
+  .description {
+    font-size: 0.9375rem;
+    margin-bottom: 2rem;
+  }
+  .button {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.6875rem;
+  }
+}
+@media (max-width: 480px) {
+  .section {
+    padding: 2.5rem 0;
+  }
+  .container {
+    padding: 0 1rem;
+    gap: 1.5rem;
+  }
+  .left .imageWrapper {
+    max-width: 100%;
+  }
+  .right {
+    padding: 0.5rem 0;
+  }
+  .kicker {
+    font-size: 0.625rem;
+    margin-bottom: 0.75rem;
+  }
+  .title {
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+  }
+  .tagline {
+    font-size: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .description {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .button {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.625rem;
+  }
+  .watermarkContainer {
+    margin-top: 1.5rem;
+    gap: 1rem;
+  }
+  .watermark {
+    font-size: 3rem;
+  }
+  .watermarkLogo {
+    height: 3rem;
   }
 }
 .left .imageWrapper {

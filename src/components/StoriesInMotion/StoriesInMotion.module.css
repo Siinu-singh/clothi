@@ -99,3 +99,72 @@
   font-weight: 400;
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
+
+@media (max-width: 1024px) {
+  .section {
+    padding: 3rem 1.5rem;
+  }
+  .header {
+    margin-bottom: 1.5rem;
+  }
+  .title {
+    font-size: 1.25rem;
+  }
+  .subtitle {
+    font-size: 1rem;
+  }
+  .carousel {
+    gap: 1rem;
+  }
+  .card {
+    width: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 2rem 1rem;
+  }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .title {
+    font-size: 1rem;
+  }
+  .subtitle {
+    font-size: 0.875rem;
+  }
+  .desc {
+    font-size: 0.75rem;
+  }
+  .navButtons {
+    display: none;
+  }
+  .carousel {
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+  }
+  .card {
+    width: 200px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: 1.5rem 0.75rem;
+  }
+  .card {
+    width: 160px;
+    border-radius: 8px;
+  }
+  .storyTitle {
+    font-size: 1rem;
+  }
+  .overlay {
+    padding: 1rem;
+  }
+}

@@ -157,3 +157,49 @@
   background: #333333;
   transform: translateX(2px);
 }
+
+@media (max-width: 480px) {
+  .section {
+    padding: 2rem 1rem;
+  }
+  .newsletterContent {
+    padding: 1.25rem 1rem;
+    gap: 1.25rem;
+  }
+  .newsletterLeft {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    min-width: 100%;
+  }
+  .brandSun {
+    width: 140px;
+    height: 80px;
+  }
+  .nlTitle {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+  .nlDesc {
+    font-size: 0.875rem;
+    max-width: 100%;
+  }
+  .newsletterRight {
+    width: 100%;
+    min-width: 100%;
+  }
+  .emailRow {
+    flex-direction: column;
+    border-radius: 6px;
+    gap: 0;
+  }
+  .emailInput {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+  .emailBtn {
+    padding: 0.875rem 1rem;
+    border-left: none;
+    border-top: 1px solid #e0dcd8;
+    font-size: 0.875rem;
+  }
+}

@@ -2,15 +2,18 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Search, Heart, User, ShoppingBag, LogOut, Package, Settings } from 'lucide-react';
+import { Search, Heart, User, ShoppingBag, LogOut, Package, Settings, Menu, X, Instagram, Facebook, Youtube } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useFavorites } from '../../context/FavoritesContext';
 import CartDropdown from '../CartDropdown/CartDropdown';
 import SearchDropdown from '../SearchDropdown/SearchDropdown';
+import { getCollections } from '../../lib/api-collections';
 import styles from './Navbar.module.css';
 
 const searchHints = ['POLO', 'OVERSIZE', 'CASUAL', 'DRY-FIT'];
+
+
 
 const Navbar = () => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -22,6 +25,8 @@ const Navbar = () => {
   const [searchHintText, setSearchHintText] = useState('');
   const [isHintDeleting, setIsHintDeleting] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileCategories, setMobileCategories] = useState([]);
   const userMenuRef = useRef(null);
   const cartDropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
@@ -50,6 +55,53 @@ const Navbar = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Fetch collections
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const res = await getCollections(1, 10);
+        if (res.success && res.data && res.data.length > 0) {
+          // Use all available collections from the DB
+          const mapped = res.data.map(c => ({
+            name: c.name,
+            href: `/collections/${c.slug}`,
+            image: c.images?.[0]?.url || '/collection_duo.png'
+          }));
+          setMobileCategories(mapped);
+        } else {
+          // Fallback if DB is empty
+          setMobileCategories([
+            { name: 'POLO', href: '/collections/polo', image: '/collection_duo.png' },
+            { name: 'OVERSIZE', href: '/collections/oversize', image: '/collection_duo.png' },
+            { name: 'CASUAL', href: '/collections/casual', image: '/collection_duo.png' },
+            { name: 'DRY-FIT', href: '/collections/dry-fit', image: '/collection_duo.png' },
+          ]);
+        }
+      } catch (err) {
+        console.error('Failed to fetch mobile categories:', err);
+      }
+    };
+    fetchCollections();
+  }, []);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+      document.documentElement.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   // Handle scroll for navbar transparency effect
   useEffect(() => {
@@ -120,27 +172,39 @@ const Navbar = () => {
   };
 
   return (
-    <nav
-      className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}
-      onMouseLeave={() => setActiveMenu(null)}
-    >
-       <div className={styles.inner}>
-          <div className={styles.left}>
-            <Link href="/" className={styles.brand}>
-              <img src="/Logo.png" alt="Clothi Logo" className={styles.logo} />
-              <span>CLOTHI</span>
-            </Link>
-            <ul className={styles.navLinks}>
-              <li><Link href="/catalog" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>SHOP ALL</Link></li>
-              <li><Link href="/collections" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>COLLECTIONS</Link></li>
-              <li><Link href="/catalog?category=POLO" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>POLO</Link></li>
-              <li><Link href="/catalog?category=OVERSIZE" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>OVERSIZE</Link></li>
-              <li><Link href="/catalog?category=CASUAL" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>CASUAL</Link></li>
-              <li><Link href="/catalog?category=DRY-FIT" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>DRY-FIT</Link></li>
-            </ul>
-          </div>
-        <div className={styles.right}>
-          <div className={styles.searchContainer} ref={searchContainerRef}>
+    <>
+      <nav
+        className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}
+        onMouseLeave={() => setActiveMenu(null)}
+      >
+         <div className={styles.inner}>
+            <div className={styles.left}>
+              <button 
+                className={styles.mobileMenuBtn}
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X size={24} strokeWidth={1.5} /> : <Menu size={24} strokeWidth={1.5} />}
+              </button>
+              <Link href="/" className={styles.brand}>
+                <img src="/Logo.png" alt="Clothi Logo" className={styles.logo} />
+                <span className={styles.brandText}>CLOTHI</span>
+              </Link>
+            </div>
+            
+            <div className={styles.center}>
+              <ul className={styles.navLinks}>
+                <li><Link href="/catalog" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>SHOP ALL</Link></li>
+                <li><Link href="/collections" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>COLLECTIONS</Link></li>
+                <li><Link href="/catalog?category=POLO" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>POLO</Link></li>
+                <li><Link href="/catalog?category=OVERSIZE" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>OVERSIZE</Link></li>
+                <li><Link href="/catalog?category=CASUAL" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>CASUAL</Link></li>
+                <li><Link href="/catalog?category=DRY-FIT" className={`${styles.navLink} ${isScrolled ? styles.navLinkScrolled : ''}`}>DRY-FIT</Link></li>
+              </ul>
+            </div>
+
+            <div className={styles.right}>
+           <div className={styles.searchContainer} ref={searchContainerRef}>
             <div 
               className={`${styles.searchBox} ${searchOpen ? styles.searchBoxActive : ''}`}
             >
@@ -266,6 +330,59 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
+    
+    <div 
+      className={`${styles.mobileMenuOverlay} ${mobileMenuOpen ? styles.open : ''}`}
+      onClick={() => setMobileMenuOpen(false)}
+    />
+    <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.open : ''}`}>
+      <div className={styles.mobileImageGrid}>
+        {mobileCategories.map((cat, index) => (
+          <Link 
+            key={index} 
+            href={cat.href} 
+            className={styles.mobileImageCard}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <div className={styles.mobileImageWrap}>
+              <img src={cat.image} alt={cat.name} className={styles.mobileImage} />
+            </div>
+            <span className={styles.mobileImageText}>{cat.name}</span>
+          </Link>
+        ))}
+      </div>
+
+      <ul className={styles.mobileMenuLinks}>
+        {mobileCategories.map((cat, index) => (
+          <li key={index}><Link href={cat.href} onClick={() => setMobileMenuOpen(false)}>{cat.name}</Link></li>
+        ))}
+      </ul>
+      
+      {/* MOBILE FOOTER */}
+      <div className={styles.mobileDrawerFooter}>
+        <div className={styles.mobileSocials}>
+          <a href="#" target="_blank" rel="noreferrer" aria-label="Instagram">
+            <Instagram size={20} strokeWidth={1.5} />
+          </a>
+          <a href="#" target="_blank" rel="noreferrer" aria-label="Facebook">
+            <Facebook size={20} strokeWidth={1.5} />
+          </a>
+          <a href="#" target="_blank" rel="noreferrer" aria-label="YouTube">
+            <Youtube size={20} strokeWidth={1.5} />
+          </a>
+        </div>
+        
+        <Link 
+          href={user ? "/account" : "/login"} 
+          className={styles.mobileLoginLink}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <User size={18} strokeWidth={1.5} />
+          <span>{user ? "My Account" : "Log in"}</span>
+        </Link>
+      </div>
+    </div>
+    </>
   );
 };
 

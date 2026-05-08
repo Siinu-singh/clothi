@@ -38,10 +38,12 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  max-width: 100%;
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -75,6 +77,18 @@ img {
   max-width: 1536px;
   margin: 0 auto;
   padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+  .container-full {
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-full {
+    padding: 0 0.75rem;
+  }
 }
 
 .glass-card {

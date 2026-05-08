@@ -271,11 +271,12 @@
     width: 100vw;
     right: -2rem; /* negate navbar padding */
     border-radius: 0;
+    padding: 24px 20px;
   }
   
   .inner {
     flex-direction: column;
-    gap: 40px;
+    gap: 24px;
   }
   
   .leftColumn {
@@ -285,5 +286,43 @@
   
   .tagsGrid {
     justify-content: flex-start;
+  }
+
+  .productGridWrapper {
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .overlay {
+    right: -1rem;
+    padding: 16px 12px;
+  }
+
+  .sectionTitle {
+    font-size: 0.9375rem;
+    margin-bottom: 16px;
+  }
+
+  .tagButton {
+    padding: 6px 12px;
+    font-size: 0.6875rem;
+  }
+
+  .categoryPill {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+  }
+
+  .productGrid {
+    gap: 12px 8px;
+  }
+
+  .productTitle {
+    font-size: 0.75rem;
+  }
+
+  .productPrice {
+    font-size: 0.75rem;
   }
 }
