@@ -115,6 +115,7 @@
   position: relative;
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   max-height: 380px;
   padding-right: 12px; /* space for scrollbar */
 }
@@ -135,8 +136,9 @@
 
 .productGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 12px;
+  width: 100%;
 }
 
 .productCard {
@@ -145,15 +147,16 @@
   text-decoration: none;
   cursor: pointer;
   color: #000;
+  min-width: 0;
 }
 
 .imageWrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 4 / 5;
   background: #ececec;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .productImage {
@@ -198,7 +201,7 @@
 }
 
 .productTitle {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -207,7 +210,7 @@
 }
 
 .productPrice {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 400;
   margin: 0;
 }
@@ -216,7 +219,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .swatch {

@@ -172,8 +172,8 @@ export default function AdminProductsPage() {
         setImportProgress({ current: 0, total: 1, success: 0, failed: 0 });
         const result = await bulkImportProductsCsv(bulkFile, setImportProgress);
         const createdCount = result?.data?.createdCount || 0;
-        const updatedCount = result?.data?.updatedCount || 0;
-        toast.success(`CSV import completed. Created ${createdCount}, updated ${updatedCount}`);
+        const skippedCount = result?.data?.skippedCount || 0;
+        toast.success(`CSV import completed. Created ${createdCount}, skipped ${skippedCount}`);
         resetBulkImport();
         loadProducts();
         return;

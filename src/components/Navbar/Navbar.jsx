@@ -10,12 +10,18 @@ import CartDropdown from '../CartDropdown/CartDropdown';
 import SearchDropdown from '../SearchDropdown/SearchDropdown';
 import styles from './Navbar.module.css';
 
+const searchHints = ['POLO', 'OVERSIZE', 'CASUAL', 'DRY-FIT'];
+
 const Navbar = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [searchHintIndex, setSearchHintIndex] = useState(0);
+  const [searchHintText, setSearchHintText] = useState('');
+  const [isHintDeleting, setIsHintDeleting] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const userMenuRef = useRef(null);
   const cartDropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
@@ -53,6 +59,48 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (searchValue.trim().length > 0) {
+      setIsHintDeleting(false);
+    }
+  }, [searchValue]);
+
+  useEffect(() => {
+    if (searchValue.trim().length > 0) {
+      return;
+    }
+
+    const currentHint = searchHints[searchHintIndex % searchHints.length];
+
+    if (!isHintDeleting && searchHintText.length < currentHint.length) {
+      const timer = setTimeout(() => {
+        setSearchHintText(currentHint.slice(0, searchHintText.length + 1));
+      }, 110);
+      return () => clearTimeout(timer);
+    }
+
+    if (!isHintDeleting && searchHintText.length === currentHint.length) {
+      const timer = setTimeout(() => {
+        setIsHintDeleting(true);
+      }, 900);
+      return () => clearTimeout(timer);
+    }
+
+    if (isHintDeleting && searchHintText.length > 0) {
+      const timer = setTimeout(() => {
+        setSearchHintText(currentHint.slice(0, searchHintText.length - 1));
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+
+    const timer = setTimeout(() => {
+      setIsHintDeleting(false);
+      setSearchHintIndex((prev) => (prev + 1) % searchHints.length);
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [searchHintIndex, searchHintText, isHintDeleting, searchValue]);
 
   const handleLogout = async () => {
     setUserMenuOpen(false);
@@ -100,7 +148,9 @@ const Navbar = () => {
               <input 
                  className={styles.searchInput} 
                  type="text" 
-                 placeholder="Search" 
+                 placeholder={searchHintText} 
+                 value={searchValue}
+                 onChange={(event) => setSearchValue(event.target.value)}
                  onFocus={() => setSearchOpen(true)}
                />
             </div>

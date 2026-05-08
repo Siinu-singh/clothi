@@ -1,11 +1,14 @@
+'use client';
+
+import { useRef, useState } from 'react';
 import Link from 'next/link';
-import { Volume2, ChevronUp } from 'lucide-react';
+import { Volume2, VolumeX, ChevronUp } from 'lucide-react';
 import styles from './SocialFeed.module.css';
 
 const socialPosts = [
   {
     id: 1,
-    videoImg: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    videoSrc: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267604/Dryfit_video_zypckt.mp4',
     thumb: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
     title: 'Reversible Quilted Jacket - Jewel Tone',
     subtitle: 'Multi Print',
@@ -14,7 +17,7 @@ const socialPosts = [
   },
   {
     id: 2,
-    videoImg: 'https://images.unsplash.com/photo-1550614000-4b95dcb56041?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    videoSrc: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267603/Polo_Video_uygjfx.mp4',
     thumb: 'https://images.unsplash.com/photo-1550614000-4b95dcb56041?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
     title: 'Stretch Terry Indigo 5-Pocket Pant',
     subtitle: 'Belmar Coast Wash',
@@ -22,7 +25,7 @@ const socialPosts = [
   },
   {
     id: 3,
-    videoImg: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    videoSrc: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267603/Oversize_video_vksaeb.mp4',
     thumb: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
     title: 'Sunwashed Crewneck Sweater - Faded',
     subtitle: 'Black',
@@ -31,7 +34,7 @@ const socialPosts = [
   },
   {
     id: 4,
-    videoImg: 'https://images.unsplash.com/photo-1503341455253-b2e723bb3db8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    videoSrc: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267602/Casual_Video_gwzird.mp4',
     thumb: 'https://images.unsplash.com/photo-1503341455253-b2e723bb3db8?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
     title: 'Coastline Stretch Chino - Stone',
     subtitle: '',
@@ -108,6 +111,44 @@ const socialPosts = [
 ];
 
 const SocialFeed = () => {
+  const videoRefs = useRef({});
+  const [mutedById, setMutedById] = useState({});
+
+  const handleVideoMouseEnter = event => {
+    const video = event.currentTarget;
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {});
+    }
+  };
+
+  const handleVideoMouseLeave = event => {
+    const video = event.currentTarget;
+    video.pause();
+    video.currentTime = 0;
+  };
+
+  const handleToggleMute = postId => {
+    const currentMuted = mutedById[postId] ?? true;
+    const nextMuted = !currentMuted;
+    const video = videoRefs.current[postId];
+
+    setMutedById(prev => ({
+      ...prev,
+      [postId]: nextMuted
+    }));
+
+    if (video) {
+      video.muted = nextMuted;
+      if (!nextMuted) {
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(() => {});
+        }
+      }
+    }
+  };
+
   return (
     <section className={styles.socialSection}>
       <div className={styles.socialHeader}>
@@ -122,34 +163,69 @@ const SocialFeed = () => {
       </div>
 
       <div className={styles.socialGrid}>
-        {socialPosts.map(post => (
-          <div key={post.id} className={styles.socialCard}>
-            <div className={styles.videoWrapper}>
-              <img src={post.videoImg} alt="social post" className={styles.videoImg} />
-              <button className={styles.muteBtn} aria-label="Mute">
-                <Volume2 size={16} color="white" strokeWidth={2.5} />
-              </button>
-            </div>
-            <Link href="/" className={styles.productLink}>
-              <div className={styles.productCard}>
-                <div className={styles.thumbWrapper}>
-                  <img src={post.thumb} alt={post.title} className={styles.thumbImg} />
-                </div>
-                <div className={styles.productInfo}>
-                  <p className={styles.productTitle}>{post.title}</p>
-                  {post.subtitle && <p className={styles.productSub}>{post.subtitle}</p>}
-                  <p className={styles.productPrice}>
-                    {post.oldPrice && <span className={styles.oldPrice}>{post.oldPrice}</span>}
-                    <span className={styles.currentPrice}>{post.price}</span>
-                  </p>
-                </div>
-                <div className={styles.caretWrapper}>
-                  <ChevronUp size={20} color="#333" strokeWidth={2.5} />
-                </div>
+        {socialPosts.map(post => {
+          const isMuted = mutedById[post.id] ?? true;
+
+          return (
+            <div key={post.id} className={styles.socialCard}>
+              <div className={styles.videoWrapper}>
+                {post.videoSrc ? (
+                  <video
+                    className={styles.videoImg}
+                    src={post.videoSrc}
+                    loop
+                    playsInline
+                    preload="metadata"
+                    onMouseEnter={handleVideoMouseEnter}
+                    onMouseLeave={handleVideoMouseLeave}
+                    muted={isMuted}
+                    ref={node => {
+                      if (node) {
+                        videoRefs.current[post.id] = node;
+                      } else {
+                        delete videoRefs.current[post.id];
+                      }
+                    }}
+                  />
+                ) : (
+                  <img src={post.videoImg} alt="social post" className={styles.videoImg} />
+                )}
+                {post.videoSrc && (
+                  <button
+                    type="button"
+                    className={styles.muteBtn}
+                    aria-label={isMuted ? 'Unmute' : 'Mute'}
+                    onClick={() => handleToggleMute(post.id)}
+                  >
+                    {isMuted ? (
+                      <VolumeX size={16} color="white" strokeWidth={2.5} />
+                    ) : (
+                      <Volume2 size={16} color="white" strokeWidth={2.5} />
+                    )}
+                  </button>
+                )}
               </div>
-            </Link>
-          </div>
-        ))}
+              <Link href="/" className={styles.productLink}>
+                <div className={styles.productCard}>
+                  <div className={styles.thumbWrapper}>
+                    <img src={post.thumb} alt={post.title} className={styles.thumbImg} />
+                  </div>
+                  <div className={styles.productInfo}>
+                    <p className={styles.productTitle}>{post.title}</p>
+                    {post.subtitle && <p className={styles.productSub}>{post.subtitle}</p>}
+                    <p className={styles.productPrice}>
+                      {post.oldPrice && <span className={styles.oldPrice}>{post.oldPrice}</span>}
+                      <span className={styles.currentPrice}>{post.price}</span>
+                    </p>
+                  </div>
+                  <div className={styles.caretWrapper}>
+                    <ChevronUp size={20} color="#333" strokeWidth={2.5} />
+                  </div>
+                </div>
+              </Link>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
