@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -33,13 +33,14 @@ export default function ProductDetailClient({ params, initialProduct }) {
    const [reviewsRefresh, setReviewsRefresh] = useState(0);
    const [selectedImage, setSelectedImage] = useState(null);
    const [hoverImage, setHoverImage] = useState({});
+   const loadMoreRef = useRef(null);
    
    // Similar products state
    const [similarProducts, setSimilarProducts] = useState([]);
    const [similarLoading, setSimilarLoading] = useState(false);
    const [similarPage, setSimilarPage] = useState(1);
    const [hasMoreSimilar, setHasMoreSimilar] = useState(true);
-   const SIMILAR_LIMIT = 4;
+   const SIMILAR_LIMIT = 5;
 
   useEffect(() => {
     if (!initialProduct) {
@@ -75,6 +76,28 @@ export default function ProductDetailClient({ params, initialProduct }) {
     }
   }, [params.id]);
 
+  useEffect(() => {
+    if (!loadMoreRef.current || !hasMoreSimilar) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && !similarLoading) {
+          fetchSimilarProducts(similarPage + 1);
+        }
+      },
+      { rootMargin: '200px' }
+    );
+
+    observer.observe(loadMoreRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasMoreSimilar, similarLoading, similarPage]);
+
   const fetchSimilarProducts = async (page = 1, reset = false) => {
     if (similarLoading || (!hasMoreSimilar && !reset)) return;
     
@@ -104,9 +127,6 @@ export default function ProductDetailClient({ params, initialProduct }) {
     }
   };
 
-  const handleLoadMoreSimilar = () => {
-    fetchSimilarProducts(similarPage + 1);
-  };
 
   const fetchProduct = async () => {
     try {
@@ -424,24 +444,26 @@ export default function ProductDetailClient({ params, initialProduct }) {
            </div>
          </div>
 
-         {/* Reviews Section */}
-         <div className={styles.reviewsSection}>
-           <ReviewsList 
-             productId={params.id} 
-             refreshTrigger={reviewsRefresh}
-           />
-           <ReviewForm 
-             productId={params.id}
-             onReviewSubmitted={() => setReviewsRefresh(r => r + 1)}
-           />
-         </div>
+          {/* Reviews Section */}
+          {/*
+          <div className={styles.reviewsSection}>
+            <ReviewsList 
+              productId={params.id} 
+              refreshTrigger={reviewsRefresh}
+            />
+            <ReviewForm 
+              productId={params.id}
+              onReviewSubmitted={() => setReviewsRefresh(r => r + 1)}
+            />
+          </div>
+          */}
+      </div>
 
          {/* You May Like Section */}
          {similarProducts.length > 0 && (
            <div className={styles.similarSection}>
              <div className={styles.similarHeader}>
-               <span className={styles.similarKicker}>Curated For You</span>
-               <h2 className={styles.similarTitle}>You May Also Like</h2>
+               <h2 className={styles.similarTitle}>SHOP SIMILAR</h2>
              </div>
              
               <div className={styles.similarGrid}>
@@ -471,27 +493,15 @@ export default function ProductDetailClient({ params, initialProduct }) {
                 ))}
               </div>
 
-             {/* Load More Button */}
-             {hasMoreSimilar && (
-               <div className={styles.loadMoreWrapper}>
-                 <button 
-                   className={styles.loadMoreBtn}
-                   onClick={handleLoadMoreSimilar}
-                   disabled={similarLoading}
-                 >
-                   {similarLoading ? 'Loading...' : 'LOAD MORE'}
-                 </button>
-               </div>
-             )}
-             
-             {similarLoading && similarProducts.length > 0 && (
-               <div className={styles.similarLoading}>
-                 <div className={styles.spinner}></div>
-               </div>
-             )}
+              {hasMoreSimilar && <div ref={loadMoreRef} className={styles.loadMoreSentinel} />}
+
+              {similarLoading && similarProducts.length > 0 && (
+                <div className={styles.similarLoading}>
+                  <div className={styles.spinner}></div>
+                </div>
+              )}
            </div>
          )}
-       </div>
      </div>
    );
 }
