@@ -21,7 +21,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 2rem;
+  padding: 0 2rem 0 0;
   height: 64px;
   max-width: 100%;
   position: relative;
@@ -44,14 +44,13 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex: 1;
 }
 
 .center {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  flex: 2;
+  margin-left: 2rem;
 }
 
 @media (max-width: 1023px) {
@@ -235,12 +234,12 @@
 .brand {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: -0.1rem;
+  justify-content: flex-start;
+  gap: 0;
   font-family: var(--font-body);
   font-size: 1.5rem;
   font-weight: 900;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-on-surface);
   transition: opacity 0.15s ease;
@@ -267,14 +266,12 @@
 }
 
 .logo {
-   height: 90px;
-   width: 90px;
-   object-fit: contain;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   margin-right: -5px;
- }
+  height: 90px;
+  width: 90px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-right: -15px;
+}
 
  @media (max-width: 480px) {
    .logo {
@@ -288,7 +285,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 0.5rem;
-  flex: 1;
+  margin-left: auto;
 }
 
 .searchBox {
