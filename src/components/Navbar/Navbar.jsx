@@ -48,9 +48,6 @@ const Navbar = () => {
       if (cartDropdownRef.current && !cartDropdownRef.current.contains(event.target)) {
         setCartDropdownOpen(false);
       }
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
-        setSearchOpen(false);
-      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -204,22 +201,17 @@ const Navbar = () => {
             </div>
 
             <div className={styles.right}>
-           <div className={styles.searchContainer} ref={searchContainerRef}>
-            <div 
-              className={`${styles.searchBox} ${searchOpen ? styles.searchBoxActive : ''}`}
-            >
-              <Search size={16} strokeWidth={1.5} color="var(--color-outline)" />
-              <input 
-                 className={styles.searchInput} 
-                 type="text" 
-                 placeholder={searchHintText} 
-                 value={searchValue}
-                 onChange={(event) => setSearchValue(event.target.value)}
-                 onFocus={() => setSearchOpen(true)}
-               />
-            </div>
-            <SearchDropdown isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
-          </div>
+              <div className={styles.searchContainer} ref={searchContainerRef}>
+                <button 
+                  className={styles.searchBox}
+                  onClick={() => setSearchOpen(true)}
+                >
+                  <Search size={16} strokeWidth={1.5} color="var(--color-outline)" />
+                  <div className={styles.searchInput}>
+                     {searchHintText || 'Search...'}
+                  </div>
+                </button>
+              </div>
           
           {/* Favorites Button */}
           <Link href="/favorites" className={styles.iconBtn}>
@@ -382,6 +374,8 @@ const Navbar = () => {
         </Link>
       </div>
     </div>
+    
+    <SearchDropdown isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 };

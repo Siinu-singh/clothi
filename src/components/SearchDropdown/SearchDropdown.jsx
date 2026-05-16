@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Heart } from 'lucide-react';
+import { Heart, ArrowLeft, Search as SearchIcon, X } from 'lucide-react';
 import { apiFetch } from '../../lib/api';
 import { useFavorites } from '../../context/FavoritesContext';
 import styles from './SearchDropdown.module.css';
@@ -12,6 +12,7 @@ export default function SearchDropdown({ isOpen, onClose }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -20,11 +21,11 @@ export default function SearchDropdown({ isOpen, onClose }) {
   const { addToFavorites, removeFromFavorites, isFavorited } = useFavorites();
   const dropdownRef = useRef(null);
   const gridWrapperRef = useRef(null);
+  const inputRef = useRef(null);
 
   const categories = ['', 'The Crown Series', 'Zen-G by Clothi', 'Motion x', 'Prime Basics'];
   const ITEMS_PER_PAGE = 8;
   
-  // Hardcoded top searches similar to Snitch
   const topSearches = [
     'POLO', 'LINEN SHIRTS', 'WHITE SHIRT', 
     'BLACK SHIRT', 'FORMAL WEAR', 'BOOTCUT JEANS', 
@@ -36,52 +37,89 @@ export default function SearchDropdown({ isOpen, onClose }) {
       setPage(1);
       setProducts([]);
       setHasMore(true);
-      fetchProducts(activeCategory, 1);
+      fetchProducts(activeCategory, 1, searchQuery);
+      
+      // Focus input when opened
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 100);
+      
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
     }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen, activeCategory]);
 
+  // Debounced search
   useEffect(() => {
-    const wrapper = gridWrapperRef.current;
-    if (!wrapper) return;
+    if (!isOpen) return;
+    
+    const timeoutId = setTimeout(() => {
+      setPage(1);
+      setProducts([]);
+      setHasMore(true);
+      fetchProducts(activeCategory, 1, searchQuery);
+    }, 500);
+    
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
 
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = wrapper;
-      // When user is within 100px of the bottom, fetch more
-      if (scrollHeight - scrollTop - clientHeight < 100 && hasMore && !isLoadingMore && !loading) {
-        fetchMoreProducts(activeCategory, page + 1);
+  const observerTarget = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoadingMore && !loading) {
+          fetchMoreProducts(activeCategory, page + 1, searchQuery);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
       }
     };
+  }, [hasMore, isLoadingMore, loading, activeCategory, searchQuery, page]);
 
-    wrapper.addEventListener('scroll', handleScroll);
-    return () => wrapper.removeEventListener('scroll', handleScroll);
-  }, [page, hasMore, isLoadingMore, loading, activeCategory]);
-
-  const fetchProducts = async (category, pageNum) => {
+  const fetchProducts = async (category, pageNum, search) => {
     try {
       setLoading(true);
       let url = `/products?limit=${ITEMS_PER_PAGE}&skip=${(pageNum - 1) * ITEMS_PER_PAGE}&sortBy=popular`;
-      if (category) {
-        url += `&category=${encodeURIComponent(category)}`;
-      }
+      if (category) url += `&category=${encodeURIComponent(category)}`;
+      if (search) url += `&search=${encodeURIComponent(search)}`;
+      
       const response = await apiFetch(url);
       const newProducts = response.data?.products || response.products || [];
       setProducts(newProducts);
       setPage(pageNum);
       setHasMore(newProducts.length === ITEMS_PER_PAGE);
     } catch (err) {
-      console.error('Failed to fetch trending products:', err);
+      console.error('Failed to fetch products:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchMoreProducts = async (category, pageNum) => {
+  const fetchMoreProducts = async (category, pageNum, search) => {
     try {
       setIsLoadingMore(true);
       let url = `/products?limit=${ITEMS_PER_PAGE}&skip=${(pageNum - 1) * ITEMS_PER_PAGE}&sortBy=popular`;
-      if (category) {
-        url += `&category=${encodeURIComponent(category)}`;
-      }
+      if (category) url += `&category=${encodeURIComponent(category)}`;
+      if (search) url += `&search=${encodeURIComponent(search)}`;
+      
       const response = await apiFetch(url);
       const newProducts = response.data?.products || response.products || [];
       setProducts(prev => [...prev, ...newProducts]);
@@ -110,8 +148,12 @@ export default function SearchDropdown({ isOpen, onClose }) {
   };
 
   const handleTagClick = (tag) => {
-     router.push(`/catalog`);
-     onClose();
+     setSearchQuery(tag);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    if (inputRef.current) inputRef.current.focus();
   };
 
   if (!isOpen) return null;
@@ -121,9 +163,34 @@ export default function SearchDropdown({ isOpen, onClose }) {
   };
 
   return (
-    <div className={styles.overlay} ref={dropdownRef}>
+    <div className={styles.overlay} onClick={onClose} ref={dropdownRef}>
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        {/* Search Header */}
+        <div className={styles.header}>
+        <button className={styles.backButton} onClick={onClose}>
+          <ArrowLeft size={24} strokeWidth={1.5} />
+        </button>
+        <div className={styles.searchInputWrapper}>
+          <input 
+            ref={inputRef}
+            type="text" 
+            className={styles.searchInput} 
+            placeholder="Search for products, categories..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery ? (
+            <button className={styles.clearButton} onClick={handleClearSearch}>
+              <X size={18} strokeWidth={1.5} />
+            </button>
+          ) : (
+            <SearchIcon size={18} strokeWidth={1.5} className={styles.searchIcon} />
+          )}
+        </div>
+      </div>
+
       <div className={styles.inner}>
-        {/* Left Column */}
+        {/* Left Column (Desktop) / Top Section (Mobile) */}
         <div className={styles.leftColumn}>
           <h3 className={styles.sectionTitle}>TOP SEARCHES</h3>
           <div className={styles.tagsGrid}>
@@ -139,9 +206,9 @@ export default function SearchDropdown({ isOpen, onClose }) {
           </div>
         </div>
 
-        {/* Right Column */}
+        {/* Right Column / Content Section */}
         <div className={styles.rightColumn}>
-          <h3 className={styles.sectionTitle} style={{ visibility: 'hidden' }}>TRENDING</h3>
+          <h3 className={styles.sectionTitle}>TRENDING</h3>
           <div className={styles.categoriesRow}>
             {categories.map(cat => (
               <button
@@ -154,9 +221,15 @@ export default function SearchDropdown({ isOpen, onClose }) {
             ))}
           </div>
 
-          <div className={styles.productGridWrapper} ref={gridWrapperRef}>
+          <div className={styles.productGridWrapper}>
+            {products.length === 0 && !loading && (
+              <div className={styles.noResults}>
+                No products found for "{searchQuery || activeCategory || 'All'}"
+              </div>
+            )}
+            
             <div className={styles.productGrid}>
-              {loading ? (
+              {loading && products.length === 0 ? (
                 // Skeletons
                 [...Array(4)].map((_, i) => (
                   <div key={i} className={styles.skeletonCard}>
@@ -188,7 +261,7 @@ export default function SearchDropdown({ isOpen, onClose }) {
                       </div>
                       <div className={styles.productInfo}>
                         <h4 className={styles.productTitle}>{p.title}</h4>
-                        <p className={styles.productPrice}>${p.price?.toFixed(0) || '0'}</p>
+                        <p className={styles.productPrice}>₹{p.price?.toFixed(0) || '0'}</p>
                         <div className={styles.colorSwatches}>
                           <div className={styles.swatch} style={{backgroundColor: '#e5e5e5'}}></div>
                           <div className={styles.swatch} style={{backgroundColor: '#303030'}}></div>
@@ -213,7 +286,13 @@ export default function SearchDropdown({ isOpen, onClose }) {
                 </>
               )}
             </div>
+            
+            {/* Invisible target for infinite scroll */}
+            {hasMore && !loading && (
+              <div ref={observerTarget} style={{ height: '20px', width: '100%', marginTop: '10px' }} />
+            )}
           </div>
+        </div>
         </div>
       </div>
     </div>

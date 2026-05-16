@@ -1,162 +1,243 @@
+/* src/components/SearchDropdown/SearchDropdown.module.css */
+
 .overlay {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: -10px; /* Snug to the right edge of the search box */
-  width: 800px;
-  background-color: #f5f5f5; /* Light gray to match snitch exactly */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  padding: 32px 40px;
-  z-index: 1000;
-  border-radius: 8px 8px 0 0; /* Round top only, sharp bottom */
-  animation: slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  transform-origin: top right;
-  opacity: 1 !important;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 64px);
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 99;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 0;
+  animation: fadeIn 0.2s ease-out forwards;
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: scaleY(0.95) translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: scaleY(1) translateY(0);
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modalContent {
+  background-color: #fff;
+  width: 100%;
+  max-width: 1100px;
+  height: 80vh;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  animation: slideDownModal 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideDownModal {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.backButton:hover {
+  background-color: #f5f5f5;
+}
+
+.searchInputWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 0 1rem;
+  height: 48px;
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  color: #000;
+  padding: 0;
+  width: 100%;
+}
+
+.searchInput::placeholder {
+  color: #888;
+}
+
+.searchIcon, .clearButton {
+  color: #888;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: 0.5rem;
+}
+
+.clearButton {
+  cursor: pointer;
 }
 
 .inner {
   display: flex;
-  gap: 40px;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+  width: 100%;
 }
 
-/* Left Column: Top Searches */
 .leftColumn {
-  flex: 0 0 320px;
+  width: 40%;
+  padding: 2rem;
+  border-right: 1px solid #eee;
+  background-color: #fafafa;
+  overflow-y: auto;
+}
+
+.rightColumn {
+  width: 60%;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .sectionTitle {
-  font-family: var(--font-body);
-  font-size: 1.125rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  font-weight: 600;
   color: #000;
+  margin-bottom: 1.5rem;
   text-transform: uppercase;
-  margin-bottom: 24px;
-  text-align: center;
+}
+
+.sectionTitleDesktop {
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  display: none;
 }
 
 .tagsGrid {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .tagButton {
-  background: transparent;
-  border: 1px solid #000;
-  color: #000;
-  padding: 8px 16px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  padding: 0.6rem 1rem;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #333;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-family: inherit;
+  white-space: nowrap;
 }
 
 .tagButton:hover {
-  background: #000;
-  color: #fff;
-}
-
-/* Right Column: Trending */
-.rightColumn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  border-color: #000;
+  color: #000;
 }
 
 .categoriesRow {
   display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .categoryPill {
-  background: transparent;
-  border: 1px solid #000;
-  color: #000;
-  padding: 6px 16px;
-  font-size: 0.8125rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 20px;
+  background: #fff;
+  font-size: 0.85rem;
   font-weight: 500;
+  color: #555;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
-  font-family: inherit;
+}
+
+.categoryPill:hover {
+  border-color: #000;
+  color: #000;
 }
 
 .categoryPillActive {
   background: #000;
   color: #fff;
+  border-color: #000;
 }
 
-.categoryPill:hover:not(.categoryPillActive) {
-  background: #e2e2e2;
+.categoryPillActive:hover {
+  color: #fff;
 }
 
-/* Product Grid */
 .productGridWrapper {
-  position: relative;
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  max-height: 380px;
-  padding-right: 12px; /* space for scrollbar */
-}
-
-.productGridWrapper::-webkit-scrollbar {
-  width: 6px;
-}
-
-.productGridWrapper::-webkit-scrollbar-track {
-  background: #e0e0e0;
-  border-radius: 4px;
-}
-
-.productGridWrapper::-webkit-scrollbar-thumb {
-  background: #a0a0a0; 
-  border-radius: 4px;
+  padding-bottom: 2rem;
 }
 
 .productGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px 12px;
-  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
 }
 
 .productCard {
+  text-decoration: none;
+  color: inherit;
   display: flex;
   flex-direction: column;
-  text-decoration: none;
+  gap: 0.75rem;
   cursor: pointer;
-  color: #000;
   min-width: 0;
 }
 
 .imageWrapper {
   position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  background: #ececec;
+  aspect-ratio: 3/4;
   overflow: hidden;
-  margin-bottom: 8px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
 }
 
 .productImage {
@@ -172,17 +253,20 @@
 
 .wishlistBtn {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: #fff;
   border: none;
-  cursor: pointer;
-  color: #000;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
-  transition: transform 0.2s ease;
+  cursor: pointer;
+  color: #000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
   z-index: 2;
 }
 
@@ -191,67 +275,71 @@
 }
 
 .wishlistBtnActive {
-  color: #000; /* Assuming black is primary */
+  color: #ff3366;
 }
 
 .productInfo {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0.25rem;
+  min-width: 0;
 }
 
 .productTitle {
-  font-size: 0.8125rem;
+  font-size: 0.9rem;
   font-weight: 500;
+  margin: 0;
+  color: #000;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin: 0;
 }
 
 .productPrice {
-  font-size: 0.8125rem;
-  font-weight: 400;
+  font-size: 0.9rem;
   margin: 0;
+  color: #555;
 }
 
 .colorSwatches {
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin-top: 2px;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+  min-height: 14px;
 }
 
 .swatch {
   width: 12px;
   height: 12px;
-  border-radius: 0;
-  border: 1px solid #d1d1d1;
+  border-radius: 50%;
+  border: 1px solid #e5e5e5;
 }
 
 .swatchCount {
   font-size: 0.75rem;
-  color: #555;
-  margin-left: 4px;
+  color: #888;
+  margin-left: 0.25rem;
 }
 
-/* Loading Skeleton */
 .skeletonCard {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .skeletonImage {
   width: 100%;
-  aspect-ratio: 3 / 4;
-  background: #e2e2e2;
+  aspect-ratio: 3/4;
+  background-color: #eee;
+  border-radius: 4px;
   animation: pulse 1.5s infinite ease-in-out;
 }
 
 .skeletonText {
   height: 14px;
-  background: #e2e2e2;
+  background-color: #eee;
+  border-radius: 2px;
   width: 80%;
   animation: pulse 1.5s infinite ease-in-out;
 }
@@ -260,69 +348,101 @@
   width: 40%;
 }
 
+.noResults {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+  font-size: 1rem;
+}
+
 @keyframes pulse {
   0% { opacity: 0.6; }
   50% { opacity: 1; }
   100% { opacity: 0.6; }
 }
 
-@media (max-width: 1024px) {
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
   .overlay {
-    width: 100vw;
-    right: -2rem; /* negate navbar padding */
-    border-radius: 0;
-    padding: 24px 20px;
+    padding-top: 0;
+    background-color: #fff;
+    align-items: stretch;
   }
   
+  .modalContent {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    animation: slideUpMobile 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  @keyframes slideUpMobile {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   .inner {
     flex-direction: column;
-    gap: 24px;
+    overflow-y: auto;
   }
   
   .leftColumn {
-    flex: none;
-    align-items: flex-start;
+    width: 100%;
+    padding: 1rem;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    background-color: #fff;
+    overflow-y: visible;
   }
   
-  .tagsGrid {
-    justify-content: flex-start;
-  }
-
-  .productGridWrapper {
-    max-height: 300px;
-  }
-}
-
-@media (max-width: 480px) {
-  .overlay {
-    right: -1rem;
-    padding: 16px 12px;
+  .rightColumn {
+    width: 100%;
+    padding: 1rem;
+    overflow-y: visible;
   }
 
   .sectionTitle {
-    font-size: 0.9375rem;
-    margin-bottom: 16px;
+    font-size: 0.75rem;
   }
 
+  .tagsGrid {
+    gap: 0.5rem;
+  }
+  
   .tagButton {
-    padding: 6px 12px;
-    font-size: 0.6875rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
   }
 
   .categoryPill {
-    padding: 5px 12px;
+    padding: 0.4rem 0.8rem;
     font-size: 0.75rem;
   }
 
+  .productGridWrapper {
+    padding-bottom: 0;
+  }
+  
   .productGrid {
-    gap: 12px 8px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .header {
+    padding: 0.5rem;
+  }
+
+  .searchInputWrapper {
+    height: 40px;
   }
 
   .productTitle {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
-
+  
   .productPrice {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
 }
