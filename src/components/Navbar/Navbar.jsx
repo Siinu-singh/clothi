@@ -385,6 +385,42 @@ const Navbar = () => {
       externalSearchQuery={searchValue}
       setExternalSearchQuery={setSearchValue}
     />
+
+    {/* Mobile Bottom Bar — Snitch style */}
+    <div className={styles.mobileBottomBar}>
+      <button 
+        className={styles.bottomBarItem}
+        onClick={() => setSearchOpen(true)}
+      >
+        <Search size={22} strokeWidth={1.5} />
+        <span>Search</span>
+      </button>
+      <Link href="/favorites" className={styles.bottomBarItem}>
+        <div className={styles.bottomBarIconWrap}>
+          <Heart size={22} strokeWidth={1.5} />
+          {favoritesCount > 0 && (
+            <span className={styles.bottomBarBadge}>{favoritesCount}</span>
+          )}
+        </div>
+        <span>Wishlist</span>
+      </Link>
+      <Link href={user ? "/account" : "/login"} className={styles.bottomBarItem}>
+        <User size={22} strokeWidth={1.5} />
+        <span>{user ? "Account" : "Log in"}</span>
+      </Link>
+      <button 
+        className={styles.bottomBarItem}
+        onClick={() => setCartDropdownOpen(!cartDropdownOpen)}
+      >
+        <div className={styles.bottomBarIconWrap}>
+          <ShoppingBag size={22} strokeWidth={1.5} />
+          {cartItemCount > 0 && (
+            <span className={styles.bottomBarBadge}>{cartItemCount}</span>
+          )}
+        </div>
+        <span>Bag</span>
+      </button>
+    </div>
     </>
   );
 };
