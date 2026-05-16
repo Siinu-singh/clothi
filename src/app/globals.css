@@ -180,3 +180,10 @@ img {
 .animate-fade-in {
   animation: fadeInUp 0.6s ease forwards;
 }
+
+/* Navbar spacer responsive */
+@media (max-width: 767px) {
+  .navbar-spacer {
+    height: 56px !important;
+  }
+}

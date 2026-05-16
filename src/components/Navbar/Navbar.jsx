@@ -202,15 +202,20 @@ const Navbar = () => {
 
             <div className={styles.right}>
               <div className={styles.searchContainer} ref={searchContainerRef}>
-                <button 
+                <div 
                   className={styles.searchBox}
                   onClick={() => setSearchOpen(true)}
                 >
                   <Search size={16} strokeWidth={1.5} color="var(--color-outline)" />
-                  <div className={styles.searchInput}>
-                     {searchHintText || 'Search...'}
-                  </div>
-                </button>
+                  <input 
+                    type="text"
+                    className={styles.searchInput}
+                    placeholder={searchHintText || 'Search...'}
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    onFocus={() => setSearchOpen(true)}
+                  />
+                </div>
               </div>
           
           {/* Favorites Button */}
@@ -374,8 +379,12 @@ const Navbar = () => {
         </Link>
       </div>
     </div>
-    
-    <SearchDropdown isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+    <SearchDropdown 
+      isOpen={searchOpen} 
+      onClose={() => setSearchOpen(false)}
+      externalSearchQuery={searchValue}
+      setExternalSearchQuery={setSearchValue}
+    />
     </>
   );
 };

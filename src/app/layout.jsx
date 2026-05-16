@@ -157,6 +157,7 @@ export default function RootLayout({ children }) {
         <Providers>
           {/* <AnnouncementBar /> */}
           <Navbar />
+          <div style={{ height: '64px' }} className="navbar-spacer" />
           <main>{children}</main>
           <Newsletter />
           <Footer />

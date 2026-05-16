@@ -8,11 +8,15 @@ import { apiFetch } from '../../lib/api';
 import { useFavorites } from '../../context/FavoritesContext';
 import styles from './SearchDropdown.module.css';
 
-export default function SearchDropdown({ isOpen, onClose }) {
+export default function SearchDropdown({ isOpen, onClose, externalSearchQuery, setExternalSearchQuery }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  
+  const [internalSearchQuery, setInternalSearchQuery] = useState('');
+  const searchQuery = externalSearchQuery !== undefined ? externalSearchQuery : internalSearchQuery;
+  const setSearchQuery = setExternalSearchQuery || setInternalSearchQuery;
+  
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -46,13 +50,16 @@ export default function SearchDropdown({ isOpen, onClose }) {
         }
       }, 100);
       
-      // Prevent body scroll
+      // Prevent body scroll — lock both html and body to keep sticky navbar in place
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
     } else {
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     }
     
     return () => {
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     };
   }, [isOpen, activeCategory]);
@@ -165,134 +172,133 @@ export default function SearchDropdown({ isOpen, onClose }) {
   return (
     <div className={styles.overlay} onClick={onClose} ref={dropdownRef}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        {/* Search Header */}
+        {/* Mobile Search Header (hidden on desktop via CSS) */}
         <div className={styles.header}>
-        <button className={styles.backButton} onClick={onClose}>
-          <ArrowLeft size={24} strokeWidth={1.5} />
-        </button>
-        <div className={styles.searchInputWrapper}>
-          <input 
-            ref={inputRef}
-            type="text" 
-            className={styles.searchInput} 
-            placeholder="Search for products, categories..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          {searchQuery ? (
-            <button className={styles.clearButton} onClick={handleClearSearch}>
-              <X size={18} strokeWidth={1.5} />
-            </button>
-          ) : (
+          <button className={styles.backButton} onClick={onClose}>
+            <ArrowLeft size={22} strokeWidth={2} />
+          </button>
+          <div className={styles.searchInputWrapper}>
             <SearchIcon size={18} strokeWidth={1.5} className={styles.searchIcon} />
-          )}
-        </div>
-      </div>
-
-      <div className={styles.inner}>
-        {/* Left Column (Desktop) / Top Section (Mobile) */}
-        <div className={styles.leftColumn}>
-          <h3 className={styles.sectionTitle}>TOP SEARCHES</h3>
-          <div className={styles.tagsGrid}>
-            {topSearches.map(tag => (
-              <button 
-                key={tag} 
-                className={styles.tagButton}
-                onClick={() => handleTagClick(tag)}
-              >
-                {tag}
+            <input 
+              ref={inputRef}
+              type="text" 
+              className={styles.searchInput} 
+              placeholder="Search" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              autoFocus
+            />
+            {searchQuery && (
+              <button className={styles.clearButton} onClick={handleClearSearch}>
+                <X size={18} strokeWidth={1.5} />
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Right Column / Content Section */}
-        <div className={styles.rightColumn}>
-          <h3 className={styles.sectionTitle}>TRENDING</h3>
-          <div className={styles.categoriesRow}>
-            {categories.map(cat => (
-              <button
-                key={cat}
-                className={`${styles.categoryPill} ${activeCategory === cat ? styles.categoryPillActive : ''}`}
-                onClick={() => setActiveCategory(cat)}
-              >
-                {cat || 'All'}
-              </button>
-            ))}
-          </div>
-
-          <div className={styles.productGridWrapper}>
-            {products.length === 0 && !loading && (
-              <div className={styles.noResults}>
-                No products found for "{searchQuery || activeCategory || 'All'}"
-              </div>
             )}
-            
-            <div className={styles.productGrid}>
-              {loading && products.length === 0 ? (
-                // Skeletons
-                [...Array(4)].map((_, i) => (
-                  <div key={i} className={styles.skeletonCard}>
-                    <div className={styles.skeletonImage}></div>
-                    <div className={styles.skeletonText}></div>
-                    <div className={`${styles.skeletonText} ${styles.skeletonTextShort}`}></div>
-                  </div>
-                ))
-              ) : (
-                <>
-                  {products.map(p => (
-                    <Link href={`/product/${p._id}`} key={p._id} className={styles.productCard} onClick={onClose}>
-                      <div className={styles.imageWrapper}>
-                        <img 
-                          src={p.images?.[0] || p.image} 
-                          alt={p.title} 
-                          className={styles.productImage} 
-                        />
-                        <button 
-                          className={`${styles.wishlistBtn} ${isFavorited(p._id) ? styles.wishlistBtnActive : ''}`}
-                          onClick={(e) => handleToggleFavorite(e, p._id)}
-                        >
-                          <Heart 
-                            size={18} 
-                            strokeWidth={1.5} 
-                            fill={isFavorited(p._id) ? 'currentColor' : 'none'}
+          </div>
+        </div>
+
+        <div className={styles.inner}>
+          {/* Left Column — Desktop only (hidden on mobile via CSS) */}
+          <div className={styles.leftColumn}>
+            <h3 className={styles.sectionTitle}>TOP SEARCHES</h3>
+            <div className={styles.tagsGrid}>
+              {topSearches.map(tag => (
+                <button 
+                  key={tag} 
+                  className={styles.tagButton}
+                  onClick={() => handleTagClick(tag)}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Column — Products + Categories */}
+          <div className={styles.rightColumn}>
+            <h3 className={styles.sectionTitle}>TRENDING</h3>
+            <div className={styles.categoriesRow}>
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  className={`${styles.categoryPill} ${activeCategory === cat ? styles.categoryPillActive : ''}`}
+                  onClick={() => setActiveCategory(cat)}
+                >
+                  {cat || 'All'}
+                </button>
+              ))}
+            </div>
+
+            <div className={styles.productGridWrapper}>
+              {products.length === 0 && !loading && (
+                <div className={styles.noResults}>
+                  No products found for &ldquo;{searchQuery || activeCategory || 'All'}&rdquo;
+                </div>
+              )}
+              
+              <div className={styles.productGrid}>
+                {loading && products.length === 0 ? (
+                  [...Array(4)].map((_, i) => (
+                    <div key={i} className={styles.skeletonCard}>
+                      <div className={styles.skeletonImage}></div>
+                      <div className={styles.skeletonText}></div>
+                      <div className={`${styles.skeletonText} ${styles.skeletonTextShort}`}></div>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    {products.map(p => (
+                      <Link href={`/product/${p._id}`} key={p._id} className={styles.productCard} onClick={onClose}>
+                        <div className={styles.imageWrapper}>
+                          <img 
+                            src={p.images?.[0] || p.image} 
+                            alt={p.title} 
+                            className={styles.productImage} 
                           />
-                        </button>
-                      </div>
-                      <div className={styles.productInfo}>
-                        <h4 className={styles.productTitle}>{p.title}</h4>
-                        <p className={styles.productPrice}>₹{p.price?.toFixed(0) || '0'}</p>
-                        <div className={styles.colorSwatches}>
-                          <div className={styles.swatch} style={{backgroundColor: '#e5e5e5'}}></div>
-                          <div className={styles.swatch} style={{backgroundColor: '#303030'}}></div>
-                          {getColorsCount(p) > 2 && (
-                            <span className={styles.swatchCount}>+{getColorsCount(p) - 2}</span>
-                          )}
+                          <button 
+                            className={`${styles.wishlistBtn} ${isFavorited(p._id) ? styles.wishlistBtnActive : ''}`}
+                            onClick={(e) => handleToggleFavorite(e, p._id)}
+                          >
+                            <Heart 
+                              size={18} 
+                              strokeWidth={1.5} 
+                              fill={isFavorited(p._id) ? 'currentColor' : 'none'}
+                            />
+                          </button>
                         </div>
-                      </div>
-                    </Link>
-                  ))}
-                  {isLoadingMore && (
-                    <>
-                      {[...Array(2)].map((_, i) => (
-                        <div key={`skeleton-${i}`} className={styles.skeletonCard}>
-                          <div className={styles.skeletonImage}></div>
-                          <div className={styles.skeletonText}></div>
-                          <div className={`${styles.skeletonText} ${styles.skeletonTextShort}`}></div>
+                        <div className={styles.productInfo}>
+                          <h4 className={styles.productTitle}>{p.title}</h4>
+                          <p className={styles.productPrice}>₹{p.price?.toFixed(0) || '0'}</p>
+                          <div className={styles.colorSwatches}>
+                            <div className={styles.swatch} style={{backgroundColor: '#e5e5e5'}}></div>
+                            <div className={styles.swatch} style={{backgroundColor: '#303030'}}></div>
+                            {getColorsCount(p) > 2 && (
+                              <span className={styles.swatchCount}>+{getColorsCount(p) - 2}</span>
+                            )}
+                          </div>
                         </div>
-                      ))}
-                    </>
-                  )}
-                </>
+                      </Link>
+                    ))}
+                    {isLoadingMore && (
+                      <>
+                        {[...Array(2)].map((_, i) => (
+                          <div key={`skeleton-${i}`} className={styles.skeletonCard}>
+                            <div className={styles.skeletonImage}></div>
+                            <div className={styles.skeletonText}></div>
+                            <div className={`${styles.skeletonText} ${styles.skeletonTextShort}`}></div>
+                          </div>
+                        ))}
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+              
+              {/* Infinite scroll trigger */}
+              {hasMore && !loading && (
+                <div ref={observerTarget} style={{ height: '20px', width: '100%', marginTop: '10px' }} />
               )}
             </div>
-            
-            {/* Invisible target for infinite scroll */}
-            {hasMore && !loading && (
-              <div ref={observerTarget} style={{ height: '20px', width: '100%', marginTop: '10px' }} />
-            )}
           </div>
-        </div>
         </div>
       </div>
     </div>
