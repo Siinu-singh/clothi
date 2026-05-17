@@ -1,106 +1,117 @@
+'use client';
+import { useState } from 'react';
 import Link from 'next/link';
-import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone } from 'lucide-react';
+import { Instagram, Facebook, Linkedin, Mail, Phone } from 'lucide-react';
 import styles from './Footer.module.css';
 
 const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setEmail('');
+      setTimeout(() => setSubscribed(false), 3000);
+    }
+  };
+
   return (
-    <>
-      <div className={styles.benefitsRow}>
-        <div className={styles.benefitsInner}>
-          <div className={styles.benefitItem}>
-            <img src="https://fahertybrand.com/cdn/shop/files/Faherty_Truck_Illustration_1A.png?v=1744913088" className={styles.benefitIcon} alt="Free Shipping" />
-            <h4 className={styles.benefitTitle}>Free Shipping</h4>
-            <span className={styles.benefitSub}>*US domestic orders $150+</span>
+    <footer className={styles.footer}>
+      <div className={styles.container}>
+        <div className={styles.grid}>
+          {/* Column 1: Brand + Newsletter */}
+          <div className={styles.col}>
+            <Link href="/" className={styles.brand}>
+              <img src="/Logo.png" alt="Clothi Logo" className={styles.brandLogo} />
+              <span className={styles.brandText}>CLOTHI</span>
+            </Link>
+            <p className={styles.introText}>
+              Get exclusive updates on the collection launch, personalized communications, and the latest news from Clothi.
+            </p>
+            <form className={styles.newsletterForm} onSubmit={handleSubscribe}>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className={styles.newsletterInput}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <button type="submit" className={styles.newsletterBtn}>
+                {subscribed ? 'SUBSCRIBED ✓' : 'SIGN UP NOW'}
+              </button>
+            </form>
           </div>
 
-          <div className={styles.benefitItem}>
-            <img src="https://fahertybrand.com/cdn/shop/files/Faherty_Shipping_Box_Illustration.png?v=1744913451" className={styles.benefitIcon} alt="Returns & Exchanges" />
-            <h4 className={styles.benefitTitle}>Returns &amp; Exchanges</h4>
-            <Link href="/" className={styles.benefitLink}>Learn More</Link>
+          {/* Column 2: QUICK SHOP */}
+          <div className={styles.col}>
+            <h4 className={styles.colTitle}>QUICK SHOP</h4>
+            <ul className={styles.linkList}>
+              <li><Link href="/catalog">Bestsellers</Link></li>
+              <li><Link href="/catalog">New Arrivals</Link></li>
+              <li><Link href="/catalog">Trending Now</Link></li>
+            </ul>
           </div>
-          <div className={styles.benefitItem}>
-            <img src="https://fahertybrand.com/cdn/shop/files/Faherty_Guarantee_Badge_1A.png?v=1744913580" className={styles.benefitIcon} alt="Guarantee of Quality" />
-            <h4 className={styles.benefitTitle}>Guarantee of Quality</h4>
-            <Link href="/" className={styles.benefitLink}>Learn More</Link>
+
+          {/* Column 3: HELPFUL LINKS */}
+          <div className={styles.col}>
+            <h4 className={styles.colTitle}>HELPFUL LINKS</h4>
+            <ul className={styles.linkList}>
+              <li><Link href="/">About Us</Link></li>
+              <li><Link href="/">Our Stores</Link></li>
+              <li><Link href="/">Blogs</Link></li>
+              <li><Link href="/">Contact Us</Link></li>
+              <li><Link href="/orders">Track Order</Link></li>
+              <li><Link href="/">Career</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 4: MORE */}
+          <div className={styles.col}>
+            <h4 className={styles.colTitle}>MORE</h4>
+            <ul className={styles.linkList}>
+              <li><Link href="/">Shipping Policy</Link></li>
+              <li><Link href="/">Return & Exchange Policy</Link></li>
+              <li><Link href="/">Privacy Policy</Link></li>
+              <li><Link href="/">Rewards</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 5: GET IN TOUCH */}
+          <div className={styles.col}>
+            <h4 className={styles.colTitle}>GET IN TOUCH</h4>
+            <div className={styles.contactItem}>
+              <Mail size={16} strokeWidth={1.5} />
+              <a href="mailto:support@clothi.com">support@clothi.com</a>
+            </div>
+            <div className={styles.contactItem}>
+              <Phone size={16} strokeWidth={1.5} />
+              <a href="tel:+917503735901">+91 75037 35901</a>
+            </div>
+            <div className={styles.socialRow}>
+              <a href="#" className={styles.socialLink} aria-label="Instagram"><Instagram size={28} strokeWidth={1.5} /></a>
+              <a href="#" className={styles.socialLink} aria-label="LinkedIn"><Linkedin size={28} strokeWidth={1.5} /></a>
+              <a href="#" className={styles.socialLink} aria-label="X"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+              <a href="#" className={styles.socialLink} aria-label="Facebook"><Facebook size={28} strokeWidth={1.5} /></a>
+            </div>
           </div>
         </div>
       </div>
-      <footer className={styles.footer}>
-        <div className={styles.container}>
-          <div className={styles.grid}>
-            {/* Column 1: Brand & Intro */}
-            <div className={styles.col}>
-              <Link href="/" className={styles.brand}>
-                <img src="/clothi.png" alt="Clothi Logo" className={styles.brandLogo} />
-                <span className={styles.brandText}>CLOTHI</span>
-              </Link>
-              <p className={styles.introText}>
-                Get exclusive updates on the collection launch, personalized communications, and the latest news from Clothi.
-              </p>
-            </div>
 
-            {/* Column 2: QUICK SHOP */}
-            <div className={styles.col}>
-              <h4 className={styles.colTitle}>QUICK SHOP</h4>
-              <ul className={styles.linkList}>
-                <li><Link href="/">Bestsellers</Link></li>
-                <li><Link href="/">New Arrivals</Link></li>
-                <li><Link href="/">Trending Now</Link></li>
-              </ul>
-            </div>
+      {/* Mobile Brand Bottom */}
+      <div className={styles.mobileBrandBottom}>
+        <Link href="/" className={styles.mobileBrandLink}>
+          <img src="/Logo.png" alt="Clothi Logo" className={styles.mobileBrandLogo} />
+          <span className={styles.mobileBrandName}>CLOTHI</span>
+        </Link>
+      </div>
 
-            {/* Column 3: HELPFUL LINKS */}
-            <div className={styles.col}>
-              <h4 className={styles.colTitle}>HELPFUL LINKS</h4>
-              <ul className={styles.linkList}>
-                <li><Link href="/">About Us</Link></li>
-                <li><Link href="/">Our Stores</Link></li>
-                <li><Link href="/">Blogs</Link></li>
-                <li><Link href="/">Contact Us</Link></li>
-                <li><Link href="/">Track Order</Link></li>
-                <li><Link href="/">Career</Link></li>
-              </ul>
-            </div>
-
-            {/* Column 4: MORE */}
-            <div className={styles.col}>
-              <h4 className={styles.colTitle}>MORE</h4>
-              <ul className={styles.linkList}>
-                <li><Link href="/">Shipping Policy</Link></li>
-                <li><Link href="/">Return & Exchange Policy</Link></li>
-                <li><Link href="/">Privacy Policy</Link></li>
-                <li><Link href="/">Rewards</Link></li>
-              </ul>
-            </div>
-
-            {/* Column 5: GET IN TOUCH */}
-            <div className={styles.col}>
-              <h4 className={styles.colTitle}>GET IN TOUCH</h4>
-              <div className={styles.contactItem}>
-                <Mail size={18} strokeWidth={1.5} />
-                <a href="mailto:support@clothi.com">support@clothi.com</a>
-              </div>
-              <div className={styles.contactItem}>
-                <Phone size={18} strokeWidth={1.5} />
-                <a href="tel:+917503735901">+91 75037 35901</a>
-              </div>
-              <div className={styles.socialRow}>
-                <a href="#" className={styles.socialLink}><Instagram size={22} strokeWidth={1.5} /></a>
-                <a href="#" className={styles.socialLink}><Linkedin size={22} strokeWidth={1.5} /></a>
-                <a href="#" className={styles.socialLink}><Twitter size={22} strokeWidth={1.5} /></a>
-                <a href="#" className={styles.socialLink}><Facebook size={22} strokeWidth={1.5} /></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.bottomBar}>
-          <div className={styles.bottomInner}>
-            <p>© {new Date().getFullYear()} Clothi Clothing Private Limited. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </>
+      <div className={styles.bottomBar}>
+        <p>© {new Date().getFullYear()} Clothi Clothing Private Limited. All rights reserved.</p>
+      </div>
+    </footer>
   );
 };
 

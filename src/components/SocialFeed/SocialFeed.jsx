@@ -1,118 +1,89 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Volume2, VolumeX, ChevronUp } from 'lucide-react';
+import { Volume2, VolumeX, Instagram, Twitter, Youtube, Facebook } from 'lucide-react';
 import styles from './SocialFeed.module.css';
 
 const socialPosts = [
   {
     id: 1,
     videoSrc: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267604/Dryfit_video_zypckt.mp4',
-    thumb: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Reversible Quilted Jacket - Jewel Tone',
-    subtitle: 'Multi Print',
-    oldPrice: '$398',
-    price: '$319'
+    thumb: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267604/Dryfit_video_zypckt.jpg',
+    title: 'Dryfit Activewear',
+    subtitle: 'Stay active and stylish'
   },
   {
     id: 2,
     videoSrc: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267603/Polo_Video_uygjfx.mp4',
-    thumb: 'https://images.unsplash.com/photo-1550614000-4b95dcb56041?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Stretch Terry Indigo 5-Pocket Pant',
-    subtitle: 'Belmar Coast Wash',
-    price: '$198'
+    thumb: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267603/Polo_Video_uygjfx.jpg',
+    title: 'Classic Polo Shirt',
+    subtitle: 'Elevate your everyday look'
   },
   {
     id: 3,
     videoSrc: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267603/Oversize_video_vksaeb.mp4',
-    thumb: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Sunwashed Crewneck Sweater - Faded',
-    subtitle: 'Black',
-    oldPrice: '$198',
-    price: '$99'
+    thumb: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267603/Oversize_video_vksaeb.jpg',
+    title: 'Oversize Comfort Tee',
+    subtitle: 'Relaxed fit for modern style'
   },
   {
     id: 4,
     videoSrc: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267602/Casual_Video_gwzird.mp4',
-    thumb: 'https://images.unsplash.com/photo-1503341455253-b2e723bb3db8?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Coastline Stretch Chino - Stone',
-    subtitle: '',
-    price: '$178'
-  },
-  {
-    id: 5,
-    videoImg: 'https://images.unsplash.com/photo-1542272604-787c62d465d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-    thumb: 'https://images.unsplash.com/photo-1542272604-787c62d465d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Premium Denim Jacket - Classic',
-    subtitle: 'Indigo Wash',
-    oldPrice: '$350',
-    price: '$249'
-  },
-  {
-    id: 6,
-    videoImg: 'https://images.unsplash.com/photo-1609902726285-b751441d6e4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-    thumb: 'https://images.unsplash.com/photo-1609902726285-b751441d6e4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Casual Cotton Hoodie',
-    subtitle: 'Charcoal Grey',
-    price: '$129'
-  },
-  {
-    id: 7,
-    videoImg: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-    thumb: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Linen Blend Shirt - Summer',
-    subtitle: 'White',
-    oldPrice: '$179',
-    price: '$129'
-  },
-  {
-    id: 8,
-    videoImg: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-    thumb: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Vintage T-Shirt Collection',
-    subtitle: 'Cream Color',
-    price: '$89'
-  },
-  {
-    id: 9,
-    videoImg: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-    thumb: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Organic Linen Pants',
-    subtitle: 'Natural Beige',
-    oldPrice: '$219',
-    price: '$159'
-  },
-  {
-    id: 10,
-    videoImg: 'https://images.unsplash.com/photo-1551488831-00cafb341e90?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-    thumb: 'https://images.unsplash.com/photo-1551488831-00cafb341e90?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Wool Sweater Cardigan',
-    subtitle: 'Navy Blue',
-    price: '$189'
-  },
-  {
-    id: 11,
-    videoImg: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-    thumb: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Silk Blend Blouse',
-    subtitle: 'Emerald Green',
-    oldPrice: '$299',
-    price: '$199'
-  },
-  {
-    id: 12,
-    videoImg: 'https://images.unsplash.com/photo-1552062407-291826ab7b34?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-    thumb: 'https://images.unsplash.com/photo-1552062407-291826ab7b34?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
-    title: 'Premium Joggers',
-    subtitle: 'Graphite',
-    price: '$149'
+    thumb: 'https://res.cloudinary.com/dsrht8rss/video/upload/v1778267602/Casual_Video_gwzird.jpg',
+    title: 'Casual Everyday Looks',
+    subtitle: 'Effortless coastal vibes'
   }
+];
+
+const handles = [
+  { text: 'clothi_official', icon: Instagram, color: '#E1306C' },
+  { text: 'clothi_tweets', icon: Twitter, color: '#1DA1F2' },
+  { text: 'clothi_studio', icon: Youtube, color: '#FF0000' },
+  { text: 'clothi_style', icon: Facebook, color: '#1877F2' }
 ];
 
 const SocialFeed = () => {
   const videoRefs = useRef({});
   const [mutedById, setMutedById] = useState({});
+  const [typedText, setTypedText] = useState("");
+  const [handleIndex, setHandleIndex] = useState(0);
+
+  useEffect(() => {
+    let i = 0;
+    let index = 0;
+    let isDeleting = false;
+    let timeoutId;
+
+    const type = () => {
+      const currentHandle = handles[index];
+      
+      if (isDeleting) {
+        setTypedText(currentHandle.text.slice(0, i - 1));
+        i--;
+      } else {
+        setTypedText(currentHandle.text.slice(0, i + 1));
+        i++;
+      }
+
+      let speed = isDeleting ? 40 : 120;
+
+      if (!isDeleting && i === currentHandle.text.length) {
+        speed = 2500; // Pause at end
+        isDeleting = true;
+      } else if (isDeleting && i === 0) {
+        isDeleting = false;
+        index = (index + 1) % handles.length;
+        setHandleIndex(index);
+        speed = 500; // Pause before typing next handle
+      }
+
+      timeoutId = setTimeout(type, speed);
+    };
+
+    timeoutId = setTimeout(type, 120);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   const handleVideoMouseEnter = event => {
     const video = event.currentTarget;
@@ -152,8 +123,25 @@ const SocialFeed = () => {
   return (
     <section className={styles.socialSection}>
       <div className={styles.socialHeader}>
-        <div className={styles.waveIconWrapper}>
-          <img src="https://fahertybrand.com/cdn/shop/files/Wave.svg?v=1742585774" alt="wave icon" className={styles.waveIcon} />
+        <svg width="0" height="0" style={{ position: 'absolute' }}>
+          <linearGradient id="insta-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#f09433" />
+            <stop offset="25%" stopColor="#e6683c" />
+            <stop offset="50%" stopColor="#dc2743" />
+            <stop offset="75%" stopColor="#cc2366" />
+            <stop offset="100%" stopColor="#bc1888" />
+          </linearGradient>
+        </svg>
+        <div className={styles.pulseBadgeWrapper}>
+          <div className={styles.pulseBadge}>
+            {(() => {
+              const CurrentIcon = handles[handleIndex].icon;
+              return <CurrentIcon size={24} color={handles[handleIndex].color} />;
+            })()}
+            <span className={styles.typingContainer}>
+              @{typedText}<span className={styles.cursor}>|</span>
+            </span>
+          </div>
         </div>
         <div className={styles.socialTitleWrapper}>
           <span className={styles.line} />
@@ -169,6 +157,9 @@ const SocialFeed = () => {
           return (
             <div key={post.id} className={styles.socialCard}>
               <div className={styles.videoWrapper}>
+                <div className={styles.instaOverlay}>
+                  <Instagram className={styles.instaIcon} />
+                </div>
                 {post.videoSrc ? (
                   <video
                     className={styles.videoImg}
@@ -213,13 +204,6 @@ const SocialFeed = () => {
                   <div className={styles.productInfo}>
                     <p className={styles.productTitle}>{post.title}</p>
                     {post.subtitle && <p className={styles.productSub}>{post.subtitle}</p>}
-                    <p className={styles.productPrice}>
-                      {post.oldPrice && <span className={styles.oldPrice}>{post.oldPrice}</span>}
-                      <span className={styles.currentPrice}>{post.price}</span>
-                    </p>
-                  </div>
-                  <div className={styles.caretWrapper}>
-                    <ChevronUp size={20} color="#333" strokeWidth={2.5} />
                   </div>
                 </div>
               </Link>
